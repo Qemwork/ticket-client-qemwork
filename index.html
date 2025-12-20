@@ -1,60 +1,69 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QemWork - Demande d'intervention</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>QemWork - Demande d'intervention</title>
 
-  <style>
-    body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; margin:0; }
-    .container { max-width:900px; margin:auto; background:#fff; padding:25px; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,0.1); }
-    h1,h2,h3,h4 { color:#1a1a1a; margin-bottom:6px; }
-    .section-desc { color:#555; font-size:14px; margin:-6px 0 15px; }
-    input, select, textarea {
-      width:100%; padding:10px; margin-top:6px; margin-bottom:15px;
-      border:1px solid #ccc; border-radius:8px; background:#fafafa; box-sizing:border-box;
-    }
-    textarea { min-height:120px; }
-    button { width:100%; padding:15px; background:#25D366; border:none; border-radius:10px; font-size:18px; color:#fff; font-weight:bold; cursor:pointer; }
-    button:hover { background:#1ebe5d; }
-    button:disabled { opacity:.7; cursor:not-allowed; }
-    .addMetierBtn { background:#007bff; margin-bottom:20px; }
-    .removeMetierBtn { background:#dc3545; padding:8px; font-size:14px; margin-top:-5px; margin-bottom:10px; }
-    .metierBlock { border:1px solid #ddd; background:#fafafa; padding:15px; border-radius:10px; margin-bottom:20px; }
+<style>
+  body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; margin:0; }
+  .container {
+    max-width:900px; margin:auto; background:white;
+    padding:25px; border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+  }
+  h1, h2, h3 { color:#1a1a1a; margin-bottom:6px; }
+  .section-desc { color:#555; font-size:14px; margin:-6px 0 15px; }
+  input, select, textarea {
+    width:100%; padding:10px;
+    margin-top:6px; margin-bottom:15px;
+    border:1px solid #ccc; border-radius:8px; background:#fafafa;
+  }
+  textarea { min-height:120px; }
+  button {
+    width:100%; padding:15px; background:#25D366;
+    border:none; border-radius:10px; font-size:18px;
+    color:white; font-weight:bold; cursor:pointer;
+  }
+  button:hover { background:#1ebe5d; }
+  button:disabled { background:#9adfb6; cursor:not-allowed; }
+  .addMetierBtn { background:#007bff; margin-bottom:20px; }
+  .removeMetierBtn { background:#dc3545; padding:8px; font-size:14px; margin-top:-5px; margin-bottom:10px; }
+  .metierBlock { border:1px solid #ddd; background:#fafafa; padding:15px; border-radius:10px; margin-bottom:20px; }
+  .hint { font-size:12px; color:#666; margin-top:-10px; margin-bottom:12px; }
+  .notice { background:#fff6e5; border:1px solid #ffd59a; padding:10px; border-radius:10px; margin:10px 0 15px; color:#5a3b00; }
 
-    .autocomplete-container { position: relative; width: 100%; }
-    .autocomplete-results {
-      position:absolute; top:100%; left:0; right:0;
-      background:#fff; border:1px solid #ccc; border-radius:8px;
-      max-height:180px; overflow-y:auto; z-index:50;
-    }
-    .autocomplete-item { padding:10px; cursor:pointer; }
-    .autocomplete-item:hover { background:#f0f0f0; }
+  /* AUTOCOMPLETE */
+  .autocomplete-container { position: relative; width: 100%; }
+  .autocomplete-results {
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: white; border: 1px solid #ccc; border-radius: 8px;
+    max-height: 180px; overflow-y: auto; z-index: 50;
+  }
+  .autocomplete-item { padding: 10px; cursor: pointer; }
+  .autocomplete-item:hover { background: #f0f0f0; }
 
-    #photoPreview img { width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #ddd; }
-    .moExtras { margin-top:10px; padding:10px; border-radius:8px; background:#eef8ff; border:1px dashed #79a9ff; }
-
-    .projetCheckboxWrap{
-      display:grid; grid-template-columns:repeat(2,minmax(240px,1fr));
-      gap:10px 20px; padding:12px; border:1px solid #ddd;
-      border-radius:10px; background:#fff; margin-bottom:15px;
-    }
-    .projetCheckboxWrap label{ display:flex; align-items:center; gap:10px; margin:0; cursor:pointer; font-weight:normal; }
-    .projetCheckboxWrap input[type="checkbox"]{ width:auto; margin:0; }
-    @media (max-width: 650px){ .projetCheckboxWrap{ grid-template-columns:1fr; } }
-  </style>
+  #photoPreview img {
+    width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #ddd;
+  }
+  .moExtras {
+    margin-top:10px; padding:10px; border-radius:8px;
+    background:#eef8ff; border:1px dashed #79a9ff;
+  }
+</style>
 </head>
 
 <body>
 <div class="container">
   <div style="text-align:center;">
-    <img src="https://www.qemwork.com/icons/logo-qemwork-new.png" style="max-width:220px;" alt="QemWork">
+    <img src="https://www.qemwork.com/icons/logo-qemwork-new.png" style="max-width:220px;" />
   </div>
 
   <h1>Bienvenue chez QemWork !</h1>
-  <p>Ce formulaire recueille les informations nécessaires pour établir votre devis et affecter le bon technicien.</p>
+  <p>Ce formulaire nous permet de recueillir les informations nécessaires pour traiter votre demande.</p>
 
-  <form id="qemForm" onsubmit="return false;">
+  <form id="qemForm">
+
     <h2>1. Coordonnées du client</h2>
 
     <select id="typeClient" required>
@@ -64,115 +73,103 @@
     </select>
 
     <div id="clientPrive" style="display:none;">
-      <input id="nomPrive" placeholder="Nom du client *">
-      <input id="telephonePrive" placeholder="Téléphone *">
-      <input id="emailPrive" placeholder="E-mail *" type="email">
+      <input id="nomPrive" placeholder="Nom du client *" />
+      <input id="telephonePrive" placeholder="Téléphone * (ex: 6xxxxxxxx)" />
+      <input id="emailPrive" placeholder="E-mail *" type="email" />
     </div>
 
     <div id="clientEntreprise" style="display:none;">
-      <input id="nomEntreprise" placeholder="Nom de l'entreprise *">
-      <input id="nui" placeholder="Numéro de NUI *">
-      <input id="rccm" placeholder="Numéro de RCCM *">
-      <input id="siege" placeholder="Adresse du siège social *">
-      <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise *">
-      <input id="emailEntreprise" placeholder="E-mail professionnel *" type="email">
+      <input id="nomEntreprise" placeholder="Nom de l'entreprise *" />
+      <input id="nui" placeholder="Numéro de NUI *" />
+      <input id="rccm" placeholder="Numéro de RCCM *" />
+      <input id="siege" placeholder="Adresse du siège social *" />
+      <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise * (ex: 6xxxxxxxx)" />
+      <input id="emailEntreprise" placeholder="E-mail professionnel *" type="email" />
     </div>
 
     <h2>2. Coordonnées du chantier</h2>
     <p class="section-desc">Indiquez où se situe exactement le chantier.</p>
 
-    <select id="ville" required>
+    <select id="ville">
       <option value="">Sélectionner la ville...</option>
       <option value="Yaoundé">Yaoundé</option>
       <option value="Douala">Douala</option>
       <option value="Autre">Autre</option>
     </select>
 
-    <input id="villeAutre" placeholder="Précisez la ville" style="display:none;">
+    <input id="villeAutre" placeholder="Précisez la ville" style="display:none;" />
 
     <div class="autocomplete-container">
-      <input id="quartier" placeholder="Quartier *" autocomplete="off">
+      <input id="quartier" placeholder="Quartier" autocomplete="off" />
       <div id="quartierResults" class="autocomplete-results" style="display:none;"></div>
     </div>
 
-    <input id="lieudit" placeholder="Lieu dit *" required>
+    <input id="lieudit" placeholder="Lieu dit" />
 
     <h2>3. Type d’intervention</h2>
     <p class="section-desc">Sélectionnez la nature de votre demande.</p>
-    <select id="intervention" required>
+    <select id="intervention">
       <option value="">Sélectionner...</option>
       <option>Mission urgence</option>
       <option>Mission classique</option>
-      <option>Demande de main d'œuvre</option>
+      <option>Mains d'œuvres multiples</option>
       <option>Projet de construction complète</option>
       <option>Projet de rénovation</option>
-      <option>Mains d'œuvres multiples</option>
     </select>
 
-    <h2 id="titlePoint4">4. Corps de métier</h2>
-    <p id="descPoint4" class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
+    <h2>4. Corps de métier</h2>
+    <p class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
 
     <div id="metiersContainer"></div>
 
     <button type="button" class="addMetierBtn" onclick="ajouterMetier()">➕ Ajouter un corps de métier</button>
 
-    <div id="projetContainer" class="metierBlock" style="display:none;">
-      <h3 id="projetTitle">Questionnaire projet</h3>
-      <div id="projetQuestions"></div>
-      <textarea id="projetDescription" placeholder="Décrivez votre projet (détails, contraintes, objectifs)"></textarea>
-    </div>
-
     <h2>5. Informations complémentaires</h2>
-    <p class="section-desc">Toute info utile pour comprendre la demande.</p>
+    <p class="section-desc">Donnez toute information utile.</p>
     <textarea id="description" placeholder="Renseignez vos informations ici..."></textarea>
 
     <h2>6. Photos du chantier (optionnel)</h2>
-    <input type="file" id="photos" accept="image/*" multiple>
+    <p class="section-desc">Ajoutez des photos (max 2).</p>
+    <div class="notice">
+      Pour éviter les limites Google (quotas) : <b>max 2 photos</b> et évitez les très grosses images.
+    </div>
+    <input type="file" id="photos" accept="image/*" multiple />
+    <div class="hint">Max 2 photos. Si vous en choisissez plus, seules les 2 premières seront envoyées.</div>
     <div id="photoPreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
 
     <div id="sectionDisponibilites">
       <h2>7. Disponibilités</h2>
-      <p class="section-desc">Jusqu’à trois créneaux de visite.</p>
-      <input type="datetime-local" id="c1">
-      <input type="datetime-local" id="c2">
-      <input type="datetime-local" id="c3">
+      <p class="section-desc">Jusqu’à trois créneaux pour une visite.</p>
+      <input type="datetime-local" id="c1" />
+      <input type="datetime-local" id="c2" />
+      <input type="datetime-local" id="c3" />
     </div>
 
     <div id="sectionDateSouhaitee">
       <h2>8. Date souhaitée pour l’intervention</h2>
-      <input type="date" id="dateSouhaitee">
+      <input type="date" id="dateSouhaitee" />
     </div>
 
-    <button id="sendBtn" type="button" onclick="submitForm()">📩 Envoyer la demande</button>
+    <button type="button" id="submitBtn" onclick="submitForm()">📩 Envoyer la demande</button>
+
   </form>
 </div>
 
 <script>
-/* =========================
-   CONFIG
-========================= */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyZlijzXePPpelyoFfasXS1CkraQpU3Z8pHEBIMuxWbT51GwEACVO3eb7nXASbNAd-b/exec";
-const LIB_MO = "Mains d'œuvres multiples";
+/************************************************************
+ * CONFIG (URLs + limites côté client)
+ ************************************************************/
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwMBbbkY1LxTgStN1GUBd4zkwNkbohZBKpUq-pZOKSFaJJbanAbSTVv3QHi_63Boww_/exec";
+const WHATSAPP_GROUP_LINK = "https://chat.whatsapp.com/EW1WhlaUzzw3qTlrIhqAsf";
+const WHATSAPP_ADMIN_NUMBER = "237676591725"; // optionnel (récap interne)
 
-/* =========================
-   HELPERS
-========================= */
-function escapeHtml(str) {
-  return String(str ?? "")
-    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
-function toBase64(file) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
-  });
-}
+const MAX_PHOTOS = 2;
+// Anti double-clic (et pour réduire les erreurs fetch)
+let isSending = false;
 
-/* =========================
-   MÉTIERS (COMPLET)
-========================= */
+/************************************************************
+ * 1. BASE DE DONNÉES MÉTIERS (LISTE COMPLÈTE fournie)
+ ************************************************************/
 const data = {
   Carreleur_Solier: [
     { section:"I. Type de surface", question:"Quel type de surface ?", options:["Sol intérieur","Mur","Terrasse"] },
@@ -305,53 +302,9 @@ const data = {
   ]
 };
 
-/* =========================
-   QUESTIONNAIRES PROJET (COMPLETS)
-========================= */
-const QUESTIONNAIRE_CONSTRUCTION = [
-  { section:"PC. Nature du projet", question:"Type de projet ?", options:["Construction neuve","Extension / Surélévation","Projet clé en main"] },
-  { section:"PC. Nature du projet", question:"Bâtiment concerné ?", options:["Maison individuelle","Immeuble d’habitation","Bâtiment commercial","Bureaux","Entrepôt / atelier"] },
-  { section:"PC. Dimensions", question:"Surface totale approximative ?", options:["<50 m²","50–100 m²","100–200 m²","200–500 m²","500+ m²"] },
-  { section:"PC. Dimensions", question:"Nombre de niveaux ?", options:["RDC seul","R+1","R+2","R+3 et +"] },
-  { section:"PC. Terrain", question:"Terrain disponible ?", options:["Oui","Non","En cours d’acquisition"] },
-  { section:"PC. Terrain", question:"Étude de sol ?", options:["Oui – disponible","Non","À faire"] },
-  { section:"PC. Plans", question:"Plans disponibles ?", options:["Oui – architecte","Oui – croquis","Non"] },
-  { section:"PC. Administratif", question:"Permis de construire ?", options:["Oui obtenu","Oui en cours","Non","Non requis"] },
-  { section:"PC. Phase à chiffrer", question:"Phase demandée ?", options:["Études / conception","Fondations","Gros œuvre","Second œuvre","Finitions","Projet complet"] },
-  { section:"PC. Logistique", question:"Accès chantier ?", options:["Accès camion facile","Accès moyen","Accès difficile"] },
-  { section:"PC. Logistique", question:"Eau & électricité disponibles ?", options:["Oui les deux","Eau seulement","Électricité seulement","Aucun"] },
-  { section:"PC. Budget / Délais", question:"Budget estimatif ?", options:["<5 M","5–10 M","10–25 M","25–50 M","50 M+","À définir"] },
-  { section:"PC. Budget / Délais", question:"Délai souhaité ?", options:["Urgent","1–3 mois","3–6 mois","6–12 mois","12 mois+"] }
-];
-
-const QUESTIONNAIRE_RENOVATION = [
-  { section:"PR. Nature du projet", question:"Type de rénovation ?", options:["Rénovation complète","Rénovation partielle","Réhabilitation lourde"] },
-  { section:"PR. Bâtiment", question:"Bâtiment concerné ?", options:["Maison","Appartement","Immeuble","Commerce / bureaux"] },
-  { section:"PR. Âge / état", question:"Âge du bâtiment ?", options:["<10 ans","10–30 ans","30–50 ans","50+ ans","Inconnu"] },
-  { section:"PR. Âge / état", question:"État général ?", options:["Bon","Moyen","Dégradé","Très dégradé"] },
-  { section:"PR. Structure", question:"Structure touchée ?", options:["Non","Oui – murs porteurs","Oui – planchers","Oui – toiture","Inconnu"] },
-  { section:"PR. Risques", question:"Présence amiante / plomb ?", options:["Oui","Non","Inconnu"] },
-  { section:"PR. Occupation", question:"Bâtiment occupé pendant travaux ?", options:["Oui","Non","Partiellement"] },
-  { section:"PR. Surfaces", question:"Surface concernée ?", options:["<50 m²","50–100 m²","100–200 m²","200+ m²"] },
-  {
-    section:"PR. Lots",
-    question:"Lots à rénover ? (choix multiple)",
-    type:"checkboxes",
-    options:[
-      "Gros œuvre","Plomberie","Électricité","Climatisation","Menuiseries","Peinture","Carrelage",
-      "Toiture","Étanchéité","Voirie et Réseaux Divers / Extérieurs","Plâtrerie / Faux plafond",
-      "Serrurerie","Cuisine","Salle de bain","Tout"
-    ]
-  },
-  { section:"PR. Objectif", question:"Objectif principal ?", options:["Remise à neuf","Modernisation","Mise en conformité","Réparation dégâts (eau/feu)"] },
-  { section:"PR. Logistique", question:"Accès chantier ?", options:["Accès camion facile","Accès moyen","Accès difficile"] },
-  { section:"PR. Budget / Délais", question:"Budget estimatif ?", options:["<5 M","5–10 M","10–25 M","25–50 M","50 M+","À définir"] },
-  { section:"PR. Budget / Délais", question:"Délai souhaité ?", options:["Urgent","1–3 mois","3–6 mois","6–12 mois","12 mois+"] }
-];
-
-/* =========================
-   QUARTIERS (COMPLETS)
-========================= */
+/************************************************************
+ * 2. QUARTIERS (LISTES COMPLÈTES fournies)
+ ************************************************************/
 const quartiersYaounde = [
   'Akono','Angangueo','Anguissa','Bastos','Biteng','Biyem-Assi','Briqueterie',
   'Camp SIC Hippodrome','Camp-Sonel','Carrière','Cité Verte','Condengui','Damas',
@@ -386,16 +339,16 @@ const quartiersDouala = [
   'Moukala Tanda','Ndogbati','Ndogbong','Ndoghem','Ndoghem II','Ndogmbe','Ndogpassi',
   'Ndogsimbi','Ndobo','Ndokoti','Ndjong-Mebi','Ngangue','Ngodi','Ngoma','Ngwelé',
   'Nguereck','Nguibassal','Nkomba','Nkongmondo','Nkongui','Nkololoun','NKondi',
-  "Nouvelle zone d'Akwa Nord",'Nouvelle zone de New-Deido','Number One Creek',
+  'Nouvelle zone d\'Akwa Nord','Nouvelle zone de New-Deido','Number One Creek',
   'Nyalla','Nyangadou','Nylon','Oyack','Petit Toubé','Pk 7','Pk 9','Pk 10','Pk 11',
   'Pk 17','Pk 21','Plateau Joss','Pom Lien','Prison centrale de New Bell','Sabenjongo',
   'Sincatex','So-Boum','Sodiko','Sodikombo','Sobikago','Song-Mahop','Song-Ngongag',
   'Sopom','Source','T.S.F','Tergal','Village','Youpwé'
 ];
 
-/* =========================
-   DOM
-========================= */
+/************************************************************
+ * 3. DOM
+ ************************************************************/
 const typeClient = document.getElementById("typeClient");
 const clientPrive = document.getElementById("clientPrive");
 const clientEntreprise = document.getElementById("clientEntreprise");
@@ -404,12 +357,12 @@ const nomPrive = document.getElementById("nomPrive");
 const telephonePrive = document.getElementById("telephonePrive");
 const emailPrive = document.getElementById("emailPrive");
 
-const nomEntreprise = document.getElementById("nomEntreprise");
-const nui = document.getElementById("nui");
-const rccm = document.getElementById("rccm");
-const siege = document.getElementById("siege");
-const telephoneEntreprise = document.getElementById("telephoneEntreprise");
-const emailEntreprise = document.getElementById("emailEntreprise");
+const nomEntrepriseEl = document.getElementById("nomEntreprise");
+const nuiEl = document.getElementById("nui");
+const rccmEl = document.getElementById("rccm");
+const siegeEl = document.getElementById("siege");
+const telephoneEntrepriseEl = document.getElementById("telephoneEntreprise");
+const emailEntrepriseEl = document.getElementById("emailEntreprise");
 
 const villeSelect = document.getElementById("ville");
 const villeAutre = document.getElementById("villeAutre");
@@ -420,7 +373,6 @@ const lieudit = document.getElementById("lieudit");
 const intervention = document.getElementById("intervention");
 const sectionDisponibilites = document.getElementById("sectionDisponibilites");
 const sectionDateSouhaitee = document.getElementById("sectionDateSouhaitee");
-
 const c1 = document.getElementById("c1");
 const c2 = document.getElementById("c2");
 const c3 = document.getElementById("c3");
@@ -430,72 +382,93 @@ const description = document.getElementById("description");
 const photosInput = document.getElementById("photos");
 const photoPreview = document.getElementById("photoPreview");
 
-const metiersContainer = document.getElementById("metiersContainer");
-const addMetierBtn = document.querySelector(".addMetierBtn");
-
-const titlePoint4 = document.getElementById("titlePoint4");
-const descPoint4  = document.getElementById("descPoint4");
-
-const projetContainer = document.getElementById("projetContainer");
-const projetTitle = document.getElementById("projetTitle");
-const projetQuestions = document.getElementById("projetQuestions");
-const projetDescription = document.getElementById("projetDescription");
-
-const sendBtn = document.getElementById("sendBtn");
+const submitBtn = document.getElementById("submitBtn");
 
 let quartiersActifs = [];
 let compteurMetiers = 0;
 
-/* =========================
-   UI Client
-========================= */
-function refreshClientTypeUI() {
-  const v = typeClient.value;
-  clientPrive.style.display = (v === "prive") ? "block" : "none";
-  clientEntreprise.style.display = (v === "entreprise") ? "block" : "none";
-}
-typeClient.addEventListener("change", refreshClientTypeUI);
-refreshClientTypeUI();
+/************************************************************
+ * 4. PRIVÉ / ENTREPRISE
+ ************************************************************/
+typeClient.addEventListener("change", () => {
+  clientPrive.style.display = typeClient.value === "prive" ? "block" : "none";
+  clientEntreprise.style.display = typeClient.value === "entreprise" ? "block" : "none";
+  updateSubmitButtonLabel_();
+});
 
-/* =========================
-   Autocomplete quartiers
-========================= */
+/************************************************************
+ * 5. AUTOCOMPLETE QUARTIERS
+ ************************************************************/
 villeSelect.addEventListener("change", () => {
   villeAutre.style.display = (villeSelect.value === "Autre") ? "block" : "none";
-  quartiersActifs = (villeSelect.value === "Yaoundé") ? quartiersYaounde :
-                    (villeSelect.value === "Douala") ? quartiersDouala : [];
+
+  quartiersActifs =
+    villeSelect.value === "Yaoundé" ? quartiersYaounde :
+    villeSelect.value === "Douala" ? quartiersDouala :
+    [];
+
   quartierInput.value = "";
   quartierResults.innerHTML = "";
   quartierResults.style.display = "none";
+  updateSubmitButtonLabel_();
 });
 
 quartierInput.addEventListener("input", () => {
   const term = quartierInput.value.toLowerCase();
   quartierResults.innerHTML = "";
-  if (!term || quartiersActifs.length === 0) { quartierResults.style.display = "none"; return; }
 
-  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term)).slice(0, 30);
-  if (!filtered.length) { quartierResults.style.display = "none"; return; }
+  if (term.length === 0 || quartiersActifs.length === 0) {
+    quartierResults.style.display = "none";
+    updateSubmitButtonLabel_();
+    return;
+  }
+
+  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term));
+  if (!filtered.length) {
+    quartierResults.style.display = "none";
+    updateSubmitButtonLabel_();
+    return;
+  }
 
   filtered.forEach(q => {
     const div = document.createElement("div");
     div.className = "autocomplete-item";
     div.textContent = q;
-    div.onclick = () => { quartierInput.value = q; quartierResults.style.display = "none"; };
+    div.onclick = () => {
+      quartierInput.value = q;
+      quartierResults.style.display = "none";
+      updateSubmitButtonLabel_();
+    };
     quartierResults.appendChild(div);
   });
+
   quartierResults.style.display = "block";
-});
-document.addEventListener("click", e => {
-  if (!quartierResults.contains(e.target) && e.target !== quartierInput) quartierResults.style.display = "none";
+  updateSubmitButtonLabel_();
 });
 
-/* =========================
-   Photos preview
-========================= */
+document.addEventListener("click", e => {
+  if (!quartierResults.contains(e.target) && e.target !== quartierInput) {
+    quartierResults.style.display = "none";
+  }
+});
+
+/************************************************************
+ * 6. PHOTOS — preview + limite 2 (✅ precaution)
+ ************************************************************/
 photosInput.addEventListener("change", () => {
+  // ✅ Limite à 2 dès la sélection (mieux que “juste au moment d’envoyer”)
+  const files = Array.from(photosInput.files).slice(0, MAX_PHOTOS);
+  if (photosInput.files.length > MAX_PHOTOS) {
+    alert(`ℹ️ Maximum ${MAX_PHOTOS} photos. Seules les ${MAX_PHOTOS} premières seront gardées.`);
+  }
+
+  // Recrée un FileList limité
+  const dt = new DataTransfer();
+  files.forEach(f => dt.items.add(f));
+  photosInput.files = dt.files;
+
   photoPreview.innerHTML = "";
-  Array.from(photosInput.files || []).forEach(file => {
+  files.forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = document.createElement("img");
@@ -506,110 +479,9 @@ photosInput.addEventListener("change", () => {
   });
 });
 
-/* =========================
-   Projet
-========================= */
-function isProjetConstruction() { return intervention.value === "Projet de construction complète"; }
-function isProjetRenovation() { return intervention.value === "Projet de rénovation"; }
-function isProjetBatiment() { return isProjetConstruction() || isProjetRenovation(); }
-
-function renderQuestionnaireProjet(list, title) {
-  projetTitle.textContent = title;
-  projetQuestions.innerHTML = "";
-
-  list.forEach((item) => {
-    const h = document.createElement("h4");
-    h.textContent = item.section;
-    projetQuestions.appendChild(h);
-
-    const label = document.createElement("label");
-    label.style.display = "block";
-    label.style.fontWeight = "bold";
-    label.style.marginBottom = "6px";
-    label.textContent = item.question;
-    projetQuestions.appendChild(label);
-
-    if (item.type === "checkboxes") {
-      const wrap = document.createElement("div");
-      wrap.className = "projetCheckboxWrap";
-
-      item.options.forEach(optText => {
-        const row = document.createElement("label");
-        const cb = document.createElement("input");
-        cb.type = "checkbox";
-        cb.className = "projetQuestionCheckbox";
-        cb.dataset.question = item.question;
-        cb.value = optText;
-
-        cb.addEventListener("change", () => {
-          const allCbs = wrap.querySelectorAll('input[type="checkbox"]');
-          const isTout = cb.value.toLowerCase() === "tout";
-          if (cb.checked && isTout) allCbs.forEach(x => { if (x !== cb) x.checked = false; });
-          else if (cb.checked && !isTout) allCbs.forEach(x => { if (x.value.toLowerCase() === "tout") x.checked = false; });
-        });
-
-        const span = document.createElement("span");
-        span.textContent = optText;
-
-        row.appendChild(cb);
-        row.appendChild(span);
-        wrap.appendChild(row);
-      });
-
-      projetQuestions.appendChild(wrap);
-      return;
-    }
-
-    const select = document.createElement("select");
-    select.className = "projetQuestionSelect";
-    select.dataset.question = item.question;
-    select.innerHTML = `<option value="">Sélectionner...</option>`;
-    item.options.forEach(o => {
-      const opt = document.createElement("option");
-      opt.value = o; opt.textContent = o;
-      select.appendChild(opt);
-    });
-    const optAutre = document.createElement("option");
-    optAutre.value = "Autre"; optAutre.textContent = "Autre";
-    select.appendChild(optAutre);
-
-    projetQuestions.appendChild(select);
-  });
-}
-
-function refreshPoint4UI() {
-  if (isProjetConstruction()) {
-    titlePoint4.textContent = "4. Projet";
-    descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de construction.";
-    metiersContainer.style.display = "none";
-    addMetierBtn.style.display = "none";
-    projetContainer.style.display = "block";
-    renderQuestionnaireProjet(QUESTIONNAIRE_CONSTRUCTION, "Questionnaire projet — Construction complète");
-    return;
-  }
-  if (isProjetRenovation()) {
-    titlePoint4.textContent = "4. Projet";
-    descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de rénovation.";
-    metiersContainer.style.display = "none";
-    addMetierBtn.style.display = "none";
-    projetContainer.style.display = "block";
-    renderQuestionnaireProjet(QUESTIONNAIRE_RENOVATION, "Questionnaire projet — Rénovation");
-    return;
-  }
-  titlePoint4.textContent = "4. Corps de métier";
-  descPoint4.textContent = "Vous pouvez ajouter plusieurs métiers si nécessaire.";
-  projetContainer.style.display = "none";
-  projetQuestions.innerHTML = "";
-  projetDescription.value = "";
-  metiersContainer.style.display = "block";
-  addMetierBtn.style.display = "block";
-}
-intervention.addEventListener("change", () => { refreshPoint4UI(); majAffichageMainsOeuvre(); });
-refreshPoint4UI();
-
-/* =========================
-   Multi-métiers
-========================= */
+/************************************************************
+ * 7. MULTI-MÉTIERS + MO extras
+ ************************************************************/
 function ajouterMetier() {
   compteurMetiers++;
 
@@ -619,9 +491,10 @@ function ajouterMetier() {
 
   block.innerHTML = `
     <h3>Métier #${compteurMetiers}</h3>
+
     <select class="metierSelect" data-id="${compteurMetiers}">
       <option value="">Sélectionner...</option>
-      ${Object.keys(data).map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("")}
+      ${Object.keys(data).map(m => `<option value="${m}">${m}</option>`).join("")}
       <option value="Autre">Autre</option>
     </select>
 
@@ -630,20 +503,24 @@ function ajouterMetier() {
     <textarea class="descMetier" id="descMetier_${compteurMetiers}" placeholder="Description spécifique du métier"></textarea>
 
     <div class="moExtras" id="mo_${compteurMetiers}" style="display:none;">
-      <h4>${escapeHtml(LIB_MO)} – Informations supplémentaires</h4>
+      <h4>Mains d'œuvres multiples – Informations supplémentaires</h4>
+
       <label>Nombre de techniciens nécessaires</label>
       <input type="number" id="techniciens_${compteurMetiers}" min="1" placeholder="Ex : 3">
 
-      <label>Forfait par jour (Main d'œuvre)</label>
+      <label>Forfait par jour (Mains d'œuvre)</label>
       <input type="text" id="forfait_${compteurMetiers}" placeholder="Ex : 50 000 FCFA / jour">
 
       <label>Vous prenez en charge l'hébergement ?</label>
       <select id="hebergement_${compteurMetiers}">
-        <option value="">Sélectionner...</option><option value="Oui">Oui</option><option value="Non">Non</option>
+        <option value="">Sélectionner...</option>
+        <option value="Oui">Oui</option>
+        <option value="Non">Non</option>
       </select>
 
       <label>Date début de prestation</label>
       <input type="date" id="debut_${compteurMetiers}">
+
       <label>Date fin de prestation</label>
       <input type="date" id="fin_${compteurMetiers}">
     </div>
@@ -651,193 +528,328 @@ function ajouterMetier() {
     <button type="button" class="removeMetierBtn" onclick="supprimerMetier(${compteurMetiers})">❌ Supprimer ce métier</button>
   `;
 
-  metiersContainer.appendChild(block);
+  document.getElementById("metiersContainer").appendChild(block);
   majAffichageMainsOeuvre();
+  updateSubmitButtonLabel_();
 }
 
 function supprimerMetier(id) {
-  document.getElementById("metierBlock_" + id)?.remove();
+  const el = document.getElementById("metierBlock_" + id);
+  if (el) el.remove();
+  updateSubmitButtonLabel_();
 }
 
 document.addEventListener("change", function(e) {
-  if (!e.target.classList.contains("metierSelect")) return;
+  if (e.target.classList.contains("metierSelect")) {
+    const id = e.target.dataset.id;
+    const metier = e.target.value;
+    const container = document.getElementById("questions_" + id);
 
-  const id = e.target.dataset.id;
-  const metier = e.target.value;
-  const container = document.getElementById("questions_" + id);
+    container.innerHTML = "";
+    if (!metier || !data[metier]) { updateSubmitButtonLabel_(); return; }
 
-  container.innerHTML = "";
-  if (!metier || metier === "Autre" || !data[metier]) return;
+    data[metier].forEach(item => {
+      const h = document.createElement("h4");
+      h.textContent = item.section;
+      container.appendChild(h);
 
-  data[metier].forEach(item => {
-    const h = document.createElement("h4");
-    h.textContent = item.section;
-    container.appendChild(h);
+      const label = document.createElement("label");
+      label.textContent = item.question;
+      container.appendChild(label);
 
-    const label = document.createElement("label");
-    label.textContent = item.question;
-    container.appendChild(label);
+      const select = document.createElement("select");
+      select.className = "questionSelect";
+      select.dataset.metierId = id;
+      select.dataset.question = item.question;
+      select.innerHTML = `<option value="">Sélectionner...</option>`;
 
-    const select = document.createElement("select");
-    select.className = "questionSelect";
-    select.dataset.metierId = id;
-    select.dataset.question = item.question;
+      item.options.forEach(o => {
+        const opt = document.createElement("option");
+        opt.value = o;
+        opt.textContent = o;
+        select.appendChild(opt);
+      });
 
-    select.innerHTML = `<option value="">Sélectionner...</option>`;
-    item.options.forEach(o => {
-      const opt = document.createElement("option");
-      opt.value = o; opt.textContent = o;
-      select.appendChild(opt);
+      const optAutre = document.createElement("option");
+      optAutre.value = "Autre";
+      optAutre.textContent = "Autre";
+      select.appendChild(optAutre);
+
+      container.appendChild(select);
     });
 
-    const optAutre = document.createElement("option");
-    optAutre.value = "Autre"; optAutre.textContent = "Autre";
-    select.appendChild(optAutre);
-
-    container.appendChild(select);
-  });
+    updateSubmitButtonLabel_();
+  }
 });
 
-/* =========================
-   MO UI
-========================= */
+/************************************************************
+ * 8. LOGIQUE MO
+ ************************************************************/
 function majAffichageMainsOeuvre() {
-  const isMO = (intervention.value === LIB_MO);
+  const isMO = (intervention.value === "Mains d'œuvres multiples");
   sectionDisponibilites.style.display = isMO ? "none" : "block";
   sectionDateSouhaitee.style.display = isMO ? "none" : "block";
-  document.querySelectorAll(".moExtras").forEach(div => div.style.display = isMO ? "block" : "none");
+  document.querySelectorAll(".moExtras").forEach(div => {
+    div.style.display = isMO ? "block" : "none";
+  });
 }
-majAffichageMainsOeuvre();
+intervention.addEventListener("change", () => { majAffichageMainsOeuvre(); updateSubmitButtonLabel_(); });
 
-/* =========================
-   SUBMIT (sans preflight)
-========================= */
-async function submitForm() {
-  if (!typeClient.value) return alert("Merci de sélectionner le type de client.");
-  if (!villeSelect.value) return alert("Merci de sélectionner une ville.");
-  if (villeSelect.value === "Autre" && !villeAutre.value.trim()) return alert("Merci de préciser la ville.");
-  if (!quartierInput.value.trim()) return alert("Merci de renseigner le quartier.");
-  if (!lieudit.value.trim()) return alert("Merci de renseigner le lieu dit.");
-  if (!intervention.value) return alert("Merci de sélectionner le type d’intervention.");
+/************************************************************
+ * 9. Détermination "lead" vs "intervention complète" (front)
+ ************************************************************/
+function buildPayloadLight_() {
+  return {
+    ville: (villeSelect.value === "Autre") ? villeAutre.value : villeSelect.value,
+    quartier: quartierInput.value,
+    lieudit: lieudit.value,
+    intervention: intervention.value,
+    metiers: Array.from(document.querySelectorAll(".metierBlock")).map(block => ({
+      metier: block.querySelector(".metierSelect")?.value || ""
+    })),
+    // projet: { type: "..."} // (pas présent dans ton formulaire pour l’instant)
+  };
+}
 
-  sendBtn.disabled = true;
-  const oldText = sendBtn.textContent;
-  sendBtn.textContent = "Envoi…";
+function hasMetierOrProjet_(payloadLight) {
+  const hasMetier = Array.isArray(payloadLight.metiers) && payloadLight.metiers.some(m => String(m?.metier || "").trim());
+  const hasProjet = !!(payloadLight.projet && String(payloadLight.projet.type || "").trim());
+  return hasMetier || hasProjet;
+}
+
+function isInterventionCompleteFront_(payloadLight) {
+  const hasChantierEtType =
+    String(payloadLight.ville || "").trim() &&
+    String(payloadLight.quartier || "").trim() &&
+    String(payloadLight.lieudit || "").trim() &&
+    String(payloadLight.intervention || "").trim();
+  return !!(hasChantierEtType && hasMetierOrProjet_(payloadLight));
+}
+
+function updateSubmitButtonLabel_() {
+  const complete = isInterventionCompleteFront_(buildPayloadLight_());
+  submitBtn.textContent = complete ? "📩 Envoyer la demande" : "Enregistrer mes coordonnées";
+}
+
+// refresh label on key fields
+["input","change"].forEach(evt => {
+  villeAutre.addEventListener(evt, updateSubmitButtonLabel_);
+  quartierInput.addEventListener(evt, updateSubmitButtonLabel_);
+  lieudit.addEventListener(evt, updateSubmitButtonLabel_);
+  intervention.addEventListener(evt, updateSubmitButtonLabel_);
+});
+
+/************************************************************
+ * 10. WhatsApp helpers
+ ************************************************************/
+function normalizeCMPhone_(phoneRaw) {
+  const raw = String(phoneRaw || "").trim();
+  const digits = raw.replace(/\D/g, "");
+
+  if (digits.startsWith("237") && digits.length >= 11) return digits;     // 2376xxxxxxx
+  if (digits.length === 9 && digits.startsWith("6")) return "237" + digits; // 6xxxxxxx -> 2376xxxxxxx
+  return digits;
+}
+
+function openWhatsAppToClientInvite_(clientPhoneRaw) {
+  const phone = normalizeCMPhone_(clientPhoneRaw);
+  if (!phone) return;
+  const text = `Bonjour, voici le lien d’adhésion au groupe WhatsApp QemWork : ${WHATSAPP_GROUP_LINK}`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
+}
+
+function openWhatsAppToAdminSummary_(id, mode, payload) {
+  if (!WHATSAPP_ADMIN_NUMBER) return;
+
+  const title = mode === "lead" ? "NOUVEAU LEAD" : "NOUVELLE DEMANDE";
+  const idLabel = mode === "lead" ? "LeadID" : "Ticket";
+
+  const metiersTxt = (payload.metiers && payload.metiers.length)
+    ? payload.metiers.map(m => "• " + (m.metier || "")).join("\n")
+    : "• (Aucun)";
+
+  const message = `
+🔥 ${title} QEMWORK (${idLabel}: ${id || "N/A"})
+
+Nom : ${payload.nom || ""}
+Téléphone : ${payload.telephone || ""}
+Email : ${payload.email || ""}
+
+Chantier :
+• Ville : ${payload.ville || ""}
+• Quartier : ${payload.quartier || ""}
+• Lieu dit : ${payload.lieudit || ""}
+
+Intervention : ${payload.intervention || ""}
+
+Métiers :
+${metiersTxt}
+
+📝 Description :
+${payload.description || ""}
+`.trim();
+
+  window.open(`https://wa.me/${WHATSAPP_ADMIN_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+}
+
+/************************************************************
+ * 11. Fetch “safe” + timeout (✅ precaution contre erreurs fetch)
+ ************************************************************/
+async function fetchJsonWithTimeout_(url, options = {}, timeoutMs = 25000) {
+  const controller = new AbortController();
+  const t = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
+    const resp = await fetch(url, { ...options, signal: controller.signal });
+    const text = await resp.text();
+    let json;
+    try { json = JSON.parse(text); }
+    catch { throw new Error("Réponse non-JSON (serveur/connexion)."); }
+
+    if (!resp.ok) {
+      throw new Error(json?.error || `HTTP ${resp.status}`);
+    }
+    return json;
+  } catch (e) {
+    if (e.name === "AbortError") throw new Error("Timeout réseau (réessayez).");
+    throw e;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+/************************************************************
+ * 12. ENVOI
+ *
+ * Limites Google :
+ * - 12/min : déjà protégé côté Apps Script par rate-limit (10s/phone)
+ * - 500/jour : on évite les doublons + on incite lead quand incomplet
+ * - 2 photos max : appliqué côté client + côté serveur
+ ************************************************************/
+async function submitForm() {
+  if (isSending) return;
+  isSending = true;
+  submitBtn.disabled = true;
+
+  try {
+    // Vérifications minimales (évite erreurs serveur)
+    if (!typeClient.value) throw new Error("Veuillez sélectionner le type de client.");
+    const phone = (typeClient.value === "prive") ? telephonePrive.value : telephoneEntrepriseEl.value;
+    if (!String(phone || "").trim()) throw new Error("Veuillez renseigner le téléphone.");
+
+    // Photos -> base64 (déjà limitées à 2 au change)
+    const files = Array.from(photosInput.files).slice(0, MAX_PHOTOS);
     const photosBase64 = await Promise.all(
-      Array.from(photosInput.files || []).map(file =>
+      files.map(file =>
         toBase64(file).then(b64 => ({
           filename: file.name,
-          mimeType: file.type || "image/jpeg",
-          base64: String(b64).split(",")[1] || ""
+          mimeType: file.type,
+          base64: b64.split(",")[1]
         }))
       )
     );
 
+    // Métiers détaillés
     const metiers = [];
-    if (!isProjetBatiment()) {
-      document.querySelectorAll(".metierBlock").forEach(block => {
-        const id = block.id.split("_")[1];
-        const metier = block.querySelector(".metierSelect")?.value;
-        if (!metier) return;
+    document.querySelectorAll(".metierBlock").forEach(block => {
+      const id = block.id.split("_")[1];
+      const metier = block.querySelector(".metierSelect").value;
+      if (!metier) return;
 
-        const desc = block.querySelector(".descMetier")?.value || "";
-        const reponses = {};
-        block.querySelectorAll(".questionSelect").forEach(sel => {
-          reponses[sel.dataset.question] = sel.value || "";
-        });
-
-        metiers.push({
-          metier,
-          description: desc,
-          questions: reponses,
-          forfait: document.getElementById(`forfait_${id}`)?.value || null,
-          hebergement: document.getElementById(`hebergement_${id}`)?.value || null,
-          techniciens: document.getElementById(`techniciens_${id}`)?.value || null,
-          debut: document.getElementById(`debut_${id}`)?.value || null,
-          fin: document.getElementById(`fin_${id}`)?.value || null
-        });
-      });
-    }
-
-    let projet = null;
-    if (isProjetBatiment()) {
-      const projetReponses = {};
-      document.querySelectorAll(".projetQuestionSelect").forEach(sel => {
-        projetReponses[sel.dataset.question] = sel.value || "";
+      const descMetier = block.querySelector(".descMetier").value;
+      const reponses = {};
+      block.querySelectorAll(".questionSelect").forEach(sel => {
+        reponses[sel.dataset.question] = sel.value;
       });
 
-      const checkedMap = {};
-      document.querySelectorAll(".projetQuestionCheckbox:checked").forEach(cb => {
-        const q = cb.dataset.question;
-        if (!checkedMap[q]) checkedMap[q] = [];
-        checkedMap[q].push(cb.value);
+      metiers.push({
+        metier,
+        description: descMetier,
+        questions: reponses,
+        forfait: document.getElementById(`forfait_${id}`)?.value || null,
+        hebergement: document.getElementById(`hebergement_${id}`)?.value || null,
+        techniciens: document.getElementById(`techniciens_${id}`)?.value || null,
+        debut: document.getElementById(`debut_${id}`)?.value || null,
+        fin: document.getElementById(`fin_${id}`)?.value || null
       });
-      Object.keys(checkedMap).forEach(q => { projetReponses[q] = checkedMap[q]; });
+    });
 
-      projet = {
-        type: isProjetConstruction() ? "construction" : "renovation",
-        questions: projetReponses,
-        description: projetDescription.value || ""
-      };
-    }
-
-    const isMO = (intervention.value === LIB_MO);
-
-    const payloadObj = {
+    // Payload final
+    const payload = {
       typeClient: typeClient.value,
-      nom: typeClient.value === "prive" ? (nomPrive.value || "") : (nomEntreprise.value || ""),
-      telephone: typeClient.value === "prive" ? (telephonePrive.value || "") : (telephoneEntreprise.value || ""),
-      email: typeClient.value === "prive" ? (emailPrive.value || "") : (emailEntreprise.value || ""),
+      nom: typeClient.value === "prive" ? nomPrive.value : nomEntrepriseEl.value,
+      telephone: phone,
+      email: typeClient.value === "prive" ? emailPrive.value : emailEntrepriseEl.value,
 
-      nomEntreprise: typeClient.value === "entreprise" ? (nomEntreprise.value || "") : null,
-      nui: typeClient.value === "entreprise" ? (nui.value || "") : null,
-      rccm: typeClient.value === "entreprise" ? (rccm.value || "") : null,
-      siege: typeClient.value === "entreprise" ? (siege.value || "") : null,
+      telephonePrive: typeClient.value === "prive" ? telephonePrive.value : null,
+      emailPrive: typeClient.value === "prive" ? emailPrive.value : null,
 
-      ville: (villeSelect.value === "Autre") ? (villeAutre.value || "") : villeSelect.value,
-      quartier: quartierInput.value || "",
-      lieudit: lieudit.value || "",
+      nomEntreprise: typeClient.value === "entreprise" ? nomEntrepriseEl.value : null,
+      nui: typeClient.value === "entreprise" ? nuiEl.value : null,
+      rccm: typeClient.value === "entreprise" ? rccmEl.value : null,
+      siege: typeClient.value === "entreprise" ? siegeEl.value : null,
+      telephoneEntreprise: typeClient.value === "entreprise" ? telephoneEntrepriseEl.value : null,
+      emailEntreprise: typeClient.value === "entreprise" ? emailEntrepriseEl.value : null,
 
-      intervention: intervention.value || "",
-      c1: isMO ? null : (c1.value || null),
-      c2: isMO ? null : (c2.value || null),
-      c3: isMO ? null : (c3.value || null),
-      dateSouhaitee: isMO ? null : (dateSouhaitee.value || null),
+      ville: (villeSelect.value === "Autre") ? villeAutre.value : villeSelect.value,
+      quartier: quartierInput.value,
+      lieudit: lieudit.value,
 
-      description: description.value || "",
+      intervention: intervention.value,
+
+      c1: c1.value,
+      c2: c2.value,
+      c3: c3.value,
+      dateSouhaitee: dateSouhaitee.value,
+
+      description: description.value,
+
       metiers,
-      projet,
       photos: photosBase64
     };
 
-    // IMPORTANT: urlencoded => pas de preflight => évite "Failed to fetch" depuis GitHub Pages
-    const body = new URLSearchParams({ payload: JSON.stringify(payloadObj) });
-
-    const resp = await fetch(SCRIPT_URL, {
+    // ✅ POST JSON avec timeout + parsing safe
+    const res = await fetchJsonWithTimeout_(SCRIPT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body
-    });
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }, 25000);
 
-    const json = await resp.json();
-    if (!json.success) throw new Error(json.error || "Erreur serveur");
+    if (!res.success) throw new Error(res.error || "Erreur serveur.");
 
-    alert("✔️ Envoyé ! Ticket : " + (json.ticket || ""));
+    // WhatsApp client: lien groupe prêt à envoyer
+    openWhatsAppToClientInvite_(payload.telephone);
 
+    // WhatsApp admin (optionnel)
+    const mode = res.mode || (res.ticket ? "intervention" : "lead");
+    const id = res.ticket || res.leadId || "";
+    openWhatsAppToAdminSummary_(id, mode, payload);
+
+    alert("✔️ Enregistré avec succès !");
   } catch (err) {
-    console.error(err);
-    alert("❌ Failed to fetch / WebApp.\nDétail: " + (err?.message || err));
+    alert("❌ " + (err?.message || err));
+    console.log(err);
   } finally {
-    sendBtn.disabled = false;
-    sendBtn.textContent = oldText;
+    isSending = false;
+    submitBtn.disabled = false;
+    updateSubmitButtonLabel_();
   }
 }
+
+/************************************************************
+ * 13. Base64
+ ************************************************************/
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Impossible de lire le fichier."));
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+// Init
+updateSubmitButtonLabel_();
 </script>
 </body>
 </html>
-
-
-
-
