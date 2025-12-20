@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QemWork - Demande d'intervention</title>
+
+<style>
+    body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; margin:0; }
+    .container {
+        max-width:900px; margin:auto; background:white;
+        padding:25px; border-radius:12px;
+        box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 { color:#1a1a1a; margin-bottom:6px; }
+    .section-desc { color:#555; font-size:14px; margin:-6px 0 15px; }
+    input, select, textarea {
+        width:100%; padding:10px;
+        margin-top:6px; margin-bottom:15px;
+        border:1px solid #ccc; border-radius:8px; background:#fafafa;
+    }
+    textarea { min-height:120px; }
+    button {
+        width:100%; padding:15px; background:#25D366;
+        border:none; border-radius:10px; font-size:18px;
+        color:white; font-weight:bold; cursor:pointer;
+    }
+    button:hover { background:#1ebe5d; }
+
+    .addMetierBtn {
+        background:#007bff;
+        margin-bottom:20px;
+    }
+    .removeMetierBtn {
+        background:#dc3545;
+        padding:8px;
+        font-size:14px;
+        margin-top:-5px;
+        margin-bottom:10px;
+    }
+    .metierBlock {
+        border:1px solid #ddd;
+        background:#fafafa;
+        padding:15px;
+        border-radius:10px;
+        margin-bottom:20px;
+    }
+
+    /* AUTOCOMPLETE */
+    .autocomplete-container {
+        position: relative;
+        width: 100%;
+    }
+    .autocomplete-results {
+        position: absolute;
+        top: 100%; left: 0; right: 0;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        max-height: 180px;
+        overflow-y: auto;
+        z-index: 50;
+    }
+    .autocomplete-item {
+        padding: 10px; cursor: pointer;
+    }
+    .autocomplete-item:hover { background: #f0f0f0; }
+
+    #photoPreview img {
+        width:100px; height:100px;
+        object-fit:cover; border-radius:8px;
+        border:1px solid #ddd;
+    }
+
+    .moExtras {
+        margin-top:10px;
+        padding:10px;
+        border-radius:8px;
+        background:#eef8ff;
+        border:1px dashed #79a9ff;
+    }
+
+    /* ===== Checkboxes projet ===== */
+    .projetCheckboxWrap {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
+      gap: 10px 20px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fff;
+      margin-bottom: 15px;
+    }
+    .projetCheckboxWrap label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0;
+      cursor: pointer;
+      font-weight: normal;
+    }
+    .projetCheckboxWrap span {
+      text-align: left;
+      display: inline-block;
+      line-height: 1.2;
+    }
+    .projetCheckboxWrap input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+    @media (max-width: 650px) {
+      .projetCheckboxWrap { grid-template-columns: 1fr; }
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <div style="text-align:center;">
+        <img src="https://www.qemwork.com/icons/logo-qemwork-new.png" style="max-width:220px;">
+    </div>
+
+    <h1>Bienvenue chez QemWork !</h1>
+    <p>Ce formulaire nous permet de recueillir toutes les informations nécessaires afin de vous envoyer un devis estimatif, un technicien adapté et de suivre votre dossier.</p>
+
+<form id="qemForm">
+
+<h2>1. Coordonnées du client</h2>
+
+<select id="typeClient" required>
+    <option value="">Êtes-vous un client privé ou une entreprise ?</option>
+    <option value="prive">Client privé</option>
+    <option value="entreprise">Entreprise</option>
+</select>
+
+<div id="clientPrive" style="display:none;">
+    <input id="nomPrive" placeholder="Nom du client *">
+    <input id="telephonePrive" placeholder="Téléphone *">
+    <input id="emailPrive" placeholder="E-mail *" type="email">
+</div>
+
+<div id="clientEntreprise" style="display:none;">
+    <input id="nomEntreprise" placeholder="Nom de l'entreprise *">
+    <input id="nui" placeholder="Numéro de NUI *">
+    <input id="rccm" placeholder="Numéro de RCCM *">
+    <input id="siege" placeholder="Adresse du siège social *">
+    <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise *">
+    <input id="emailEntreprise" placeholder="E-mail professionnel *" type="email">
+</div>
+
+<h2>2. Coordonnées du chantier</h2>
+<p class="section-desc">Indiquez où se situe exactement le chantier.</p>
+
+<select id="ville" required>
+    <option value="">Sélectionner la ville...</option>
+    <option value="Yaoundé">Yaoundé</option>
+    <option value="Douala">Douala</option>
+    <option value="Autre">Autre</option>
+</select>
+
+<input id="villeAutre" placeholder="Précisez la ville" style="display:none;">
+
+<div class="autocomplete-container">
+    <input id="quartier" placeholder="Quartier *" autocomplete="off">
+    <div id="quartierResults" class="autocomplete-results" style="display:none;"></div>
+</div>
+
+<input id="lieudit" placeholder="Lieu dit *" required>
+
+<h2>3. Type d’intervention</h2>
+<p class="section-desc">Sélectionnez la nature de votre demande.</p>
+<select id="intervention" required>
+    <option value="">Sélectionner...</option>
+    <option>Mission urgence</option>
+    <option>Mission classique</option>
+    <option>Demande de main d'œuvre</option>
+    <option>Projet de construction complète</option>
+    <option>Projet de rénovation</option>
+</select>
+
+<h2 id="titlePoint4">4. Corps de métier</h2>
+<p id="descPoint4" class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
+
+<div id="metiersContainer"></div>
+
+<button type="button" class="addMetierBtn" onclick="ajouterMetier()">➕ Ajouter un corps de métier</button>
+
+<div id="projetContainer" class="metierBlock" style="display:none;">
+  <h3 id="projetTitle">Questionnaire projet</h3>
+  <div id="projetQuestions"></div>
+  <textarea id="projetDescription" placeholder="Décrivez votre projet (détails, contraintes, objectifs)"></textarea>
+</div>
+
+<h2>5. Informations complémentaires</h2>
+<p class="section-desc">
+    Merci de fournir toute information supplémentaire susceptible de nous aider à comprendre précisément votre demande ou le problème rencontré.
+</p>
+<textarea id="description" placeholder="Renseignez vos informations ici..."></textarea>
+
+<h2>6. Photos du chantier (optionnel)</h2>
+<p class="section-desc">
+    Ajoutez quelques photos pour aider le technicien à mieux comprendre la situation.
+</p>
+<input type="file" id="photos" accept="image/*" multiple>
+<div id="photoPreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+
+<div id="sectionDisponibilites">
+    <h2>7. Disponibilités</h2>
+    <p class="section-desc">
+        Veuillez indiquer jusqu’à trois créneaux pour une visite sur place afin d’évaluer votre demande et d’établir un devis détaillé.
+    </p>
+    <input type="datetime-local" id="c1">
+    <input type="datetime-local" id="c2">
+    <input type="datetime-local" id="c3">
+</div>
+
+<div id="sectionDateSouhaitee">
+    <h2>8. Date souhaitée pour l’intervention</h2>
+    <input type="date" id="dateSouhaitee">
+</div>
+
+<button type="button" onclick="submitForm()">📩 Envoyer la demande</button>
+
+</form>
+</div>
+
+<script>
+////////////////////////////////////////////////////////////
+// 0. HELPERS
+////////////////////////////////////////////////////////////
+const LIB_MO = "Demande de main d'œuvre";
+
+function escapeHtml(str) {
+  return String(str ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function formatKV(obj, indent = "") {
+  // obj: {key:value} where value can be string/array/null
+  const lines = [];
+  Object.keys(obj || {}).forEach(k => {
+    const v = obj[k];
+    if (v === null || v === undefined) return;
+    if (Array.isArray(v)) lines.push(`${indent}• ${k} : ${v.join(", ")}`);
+    else lines.push(`${indent}• ${k} : ${String(v)}`);
+  });
+  return lines.join("\n");
+}
+
+function safeStr(x) {
+  return (x === null || x === undefined) ? "" : String(x);
+}
+
+////////////////////////////////////////////////////////////
+// 1. BASE DE DONNÉES MÉTIERS
+////////////////////////////////////////////////////////////
+const data = {
+  Carreleur_Solier: [
+    { section:"I. Type de surface", question:"Quel type de surface ?", options:["Sol intérieur","Mur","Terrasse"] },
+    { section:"II. Type de travaux", question:"Quel type de pose ?", options:["Pose neuve","Dépose + repose","Réparation"] },
+    { section:"III. Surface (m²)", question:"Surface à poser (m²) ?", options:["0–10","10–30","30–60","60+"] },
+    { section:"IV. Support existant", question:"Type de support existant ?", options:["Béton","Ancien carrelage","Bois","Plancher"] }
+  ],
+  Charpentier_Couvreur: [
+    { section:"I. Type de structure", question:"Type de structure ?", options:["Charpente bois","Charpente métallique","Ossature mixte"] },
+    { section:"II. Type de couverture", question:"Type de couverture ?", options:["Tôle simple","Bac aluminium","Tôle isolée","Tuile locale","Membrane bitumeuse"] },
+    { section:"III. Type d’intervention", question:"Nature de l’intervention ?", options:["Construction neuve","Réfection partielle","Réparation fuite","Réparation rouille","Étanchéité toiture-terrasse"] },
+    { section:"IV. Superficie du toit", question:"Superficie du toit ?", options:["0–30","30–80","80–150","150+"] },
+    { section:"V. Inclinaison", question:"Inclinaison ?", options:["Toit plat","Pente moyenne","Forte pente"] },
+    { section:"VI. Accès toiture", question:"Accès à la toiture ?", options:["Facile (plain-pied)","Moyen (maison étage)","Difficile (hauteur >6m)"] }
+  ],
+  Chauffagiste: [
+    { section:"I. Type d’équipement", question:"Quel équipement ?", options:["Chauffe-eau électrique","Chauffe-eau solaire","Chaudière gaz/fioul","Chauffe-eau instantané"] },
+    { section:"II. Type d’intervention", question:"Quel type d’intervention ?", options:["Plus d’eau chaude","Réparation panne","Entretien / détartrage","Remplacement pièce","Remplacement complet","Installation neuve"] },
+    { section:"III. Capacité / volume", question:"Capacité ?", options:["10–30 L","50–100 L","100–200 L","200+ L"] },
+    { section:"IV. Localisation", question:"Localisation ?", options:["Salle de bain","Cuisine","Local technique","Extérieur"] },
+    { section:"V. Alimentation disponible", question:"Source d’alimentation ?", options:["Électricité stable","Gaz","Solaire"] }
+  ],
+  Climaticien_Frigoriste: [
+    { section:"I. Type de service", question:"Type de service ?", options:["Installation neuve","Entretien","Réparation","Remplacement"] },
+    { section:"II. Système", question:"Type de système ?", options:["Split mural","Multi-split","Gainable","PAC","Chambre froide"] },
+    { section:"III. Capacité", question:"Surface / capacité ?", options:["0–30 m²","30–60 m²","60–100 m²","100+ m²"] },
+    { section:"IV. Symptômes", question:"Problème constaté ?", options:["Ne refroidit pas","Fuite","Bruit","Ne démarre pas","Entretien"] },
+    { section:"V. Installation", question:"Accès installation ?", options:["Simple","Moyen","Difficile"] }
+  ],
+  Deboucheur: [
+    { section:"I. Canalisation", question:"Quel type de canalisation ?", options:["Évier","Douche","WC","Égout"] },
+    { section:"II. Intervention", question:"Type d’intervention ?", options:["Débouchage","Inspection caméra","Curage complet","Réparation"] },
+    { section:"III. Longueur", question:"Longueur estimée ?", options:["<5 m","5–10 m","10–20 m","+20 m"] },
+    { section:"IV. Accès", question:"Accès ?", options:["Facile","Moyen","Difficile"] }
+  ],
+  Désinsectiseur: [
+    { section:"I. Intervention", question:"Type d’intervention ?", options:["Désinsectisation","Dératisation","Retrait amiante"] },
+    { section:"II. Surface", question:"Surface ?", options:["0–50","50–100","100–200","200+"] },
+    { section:"III. Site", question:"Type de site ?", options:["Logement","Local commercial","Chantier","Sous-sol","Combles"] },
+    { section:"IV. Infestation", question:"Niveau ?", options:["Léger","Moyen","Fort"] },
+    { section:"V. Fréquence", question:"Fréquence ?", options:["Unique","3 mois","Annuel"] }
+  ],
+  Électricien: [
+    { section:"I. Type d’intervention", question:"Type d’intervention ?", options:["Nouvelle ligne","Éclairage","Prise/interrupteur","Panne électrique","Mise en conformité","Compteur prépayé"] },
+    { section:"II. Localisation", question:"Localisation ?", options:["Salon/chambre","Cuisine","Salle de bain","Extérieur","Tableau principal"] },
+    { section:"III. Courant", question:"Type de courant ?", options:["Monophasé","Triphasé","Solaire"] },
+    { section:"IV. Équipement", question:"Équipement concerné ?", options:["Prise","Éclairage","Ventilateur","Clim","Tableau électrique","Pompe"] },
+    { section:"V. Problème", question:"Problème constaté ?", options:["Disjonction","Court-circuit","Odeur de brûlé","Panne totale","Réfection complète"] },
+    { section:"VI. Contexte", question:"Contexte ?", options:["Maison","Appartement","Commerce","Industriel"] }
+  ],
+  Enduiseur_Façadier: [
+    { section:"I. Type", question:"Type d'enduit/revêtement ?", options:["Enduit neuf","Ravalement","Réparation fissures","ITE"] },
+    { section:"II. Support", question:"Support ?", options:["Brique","Béton","Parpaing","Pierre"] },
+    { section:"III. Finition", question:"Finition ?", options:["Grattée","Talochée","Lisse","Projetée"] },
+    { section:"IV. Surface", question:"Surface ?", options:["0–50","50–100","100–200","200+"] },
+    { section:"V. Hauteur", question:"Hauteur façade ?", options:["<3 m","3–6 m",">6 m"] },
+    { section:"VI. Accès", question:"Accès chantier ?", options:["Rue directe","Cour","Échafaudage"] }
+  ],
+  Etancheur: [
+    { section:"I. Surface", question:"Quelle surface ?", options:["Toiture terrasse","Mur enterré","Balcon/dalle","Réserve d’eau"] },
+    { section:"II. Intervention", question:"Type d’intervention ?", options:["Neuf","Réfection","Réparation fuites","Diagnostic"] },
+    { section:"III. Revêtement", question:"Type de revêtement ?", options:["Bitume","Résine","EPDM/PVC","Hydrofuge"] },
+    { section:"IV. Surface totale", question:"Surface totale ?", options:["0–20","20–50","50–100","100+"] },
+    { section:"V. Accès", question:"Accès chantier ?", options:["Facile","Moyen","Difficile"] },
+    { section:"VI. Eau", question:"Présence d'eau ?", options:["Oui","Non","Occasionnelle"] }
+  ],
+  Jardinier_Paysagiste: [
+    { section:"I. Prestation", question:"Type de prestation ?", options:["Entretien","Taille","Aménagement","Gazon"] },
+    { section:"II. Surface", question:"Surface ?", options:["0–100","100–500","500–1000","1000+"] },
+    { section:"III. Accès", question:"Accès ?", options:["Facile","Moyen","Difficile"] },
+    { section:"IV. Équipements", question:"Éléments ?", options:["Gazon","Haies","Arbres","Massifs","Arrosage auto"] }
+  ],
+  Maçon: [
+    { section:"I. Travail", question:"Type de structure ?", options:["Fondation","Mur porteur","Chape/dalle","Escalier","Rénovation"] },
+    { section:"II. Bâtiment", question:"Type de bâtiment ?", options:["Maison simple","Immeuble R+1 à R+4","Commercial","Mur de clôture"] },
+    { section:"III. Surface", question:"Surface ?", options:["0–20","20–50","50–100","100+"] },
+    { section:"IV. Matériaux", question:"Matériaux ?", options:["Parpaings","Briques","Béton armé","Pierre"] },
+    { section:"V. Sol", question:"Nature du sol ?", options:["Argileux","Sablonneux","Compact","Rocailleux","Humide"] },
+    { section:"VI. Accès", question:"Accès chantier ?", options:["Camion","Allée","Brouette","Manuel"] }
+  ],
+  Peintre_Decorateur: [
+    { section:"I. Surface", question:"Surface à peindre ?", options:["Murs","Plafonds","Menuiseries","Façade extérieure"] },
+    { section:"II. Travaux", question:"Type de travaux ?", options:["Peinture neuve","Rénovation","Décoration"] },
+    { section:"III. Surface m²", question:"Surface (m²)", options:["0–20","20–50","50–100","100+"] },
+    { section:"IV. Support", question:"État du support ?", options:["Neuf","Ancien","Très abîmé"] },
+    { section:"V. Finition", question:"Niveau de finition ?", options:["Standard","Haut de gamme"] }
+  ],
+  Plâtrier_Plaquiste: [
+    { section:"I. Travaux", question:"Type de travaux ?", options:["Cloisons","Isolation","Plafond","Finition sèche"] },
+    { section:"II. Surface", question:"Surface (m²) ?", options:["0–20","20–50","50–100","100+"] },
+    { section:"III. Support", question:"Type de support ?", options:["Mur neuf","Mur ancien","Plafond","Combles"] },
+    { section:"IV. Finition", question:"Niveau de finition ?", options:["Standard","Haut de gamme","Décorative"] },
+    { section:"V. Accès", question:"Accès ?", options:["Libre","Hauteur >3m","Chantier occupé"] }
+  ],
+  Pisciniste: [
+    { section:"I. Service", question:"Type de service ?", options:["Construction","Rénovation","Entretien","Dépannage"] },
+    { section:"II. Type", question:"Type de piscine ?", options:["Béton","Coque","Hors-sol","Naturelle"] },
+    { section:"III. Volume", question:"Volume (m³) ?", options:["<20","20–50","50–100","100+"] },
+    { section:"IV. Traitement", question:"Traitement ?", options:["Chlore","Sel","UV","Ozone","Autre"] },
+    { section:"V. Accès", question:"Accès ?", options:["Facile","Moyen","Difficile"] }
+  ],
+  Plombier: [
+    { section:"I. Intervention", question:"Quel type d’intervention ?", options:["Fuite","WC bouché","Robinet/lavabo","Chauffe-eau","Pression faible","Salle de bain complète"] },
+    { section:"II. Localisation", question:"Localisation ?", options:["Salle de bain","Cuisine","Mur/sol","Extérieur","Toiture/réservoir"] },
+    { section:"III. Matériel", question:"Tuyauterie ?", options:["PVC","Cuivre","Galva","Multicouche","Inconnu"] },
+    { section:"IV. Gravité", question:"Gravité ?", options:["Majeure","Faible pression","Bouchage","Eau stagnante","Mineur"] },
+    { section:"V. Accès", question:"Accès ?", options:["Visible","Encastre","Réservoir","Pompe"] },
+    { section:"VI. Environnement", question:"Lieu ?", options:["Appartement","Maison","Commerce","Collectif"] }
+  ],
+  Ramoneur: [
+    { section:"I. Équipement", question:"Équipement ?", options:["Cheminée","Poêle","Chaudière","VMC"] },
+    { section:"II. Entretien", question:"Dernier entretien ?", options:["<6 mois","6–12 mois",">1 an","Inconnu"] },
+    { section:"III. Intervention", question:"Type ?", options:["Ramonage","Nettoyage","Bistre","Inspection caméra"] },
+    { section:"IV. Accès", question:"Accès ?", options:["Facile","Moyen","Difficile"] },
+    { section:"V. Conduits", question:"Nombre ?", options:["1","2–3","+3"] }
+  ],
+  Staffeur_Stucateur: [
+    { section:"I. Travail", question:"Type de travail ?", options:["Moulures","Restauration","Décor mural","Sur mesure"] },
+    { section:"II. Surface", question:"Surface/éléments ?", options:["1–5 m","5–20 m","20+ m","Surface >10 m²"] },
+    { section:"III. Lieu", question:"Lieu ?", options:["Résidentiel","Patrimoine","Commerce","Institution"] },
+    { section:"IV. Finition", question:"Finition ?", options:["Lisse","Patinée","Dorée"] },
+    { section:"V. Accès", question:"Difficulté ?", options:["Facile","Moyen","Difficile"] }
+  ],
+  Technicien_Humidite: [
+    { section:"I. Problème", question:"Type de problème ?", options:["Capillarité","Infiltration","Condensation","Ventilation"] },
+    { section:"II. Localisation", question:"Où ?", options:["Sous-sol","Mur intérieur","Salle de bain","Combles"] },
+    { section:"III. Surface", question:"Surface ?", options:["0–10","10–30","30–50","50+"] },
+    { section:"IV. Traces", question:"Traces visibles ?", options:["Taches","Odeurs","Salpêtre","Structure abîmée"] },
+    { section:"V. Bâtiment", question:"Type de bâtiment ?", options:["Maison","Appartement"] }
+  ]
+};
+
+const QUESTIONNAIRE_CONSTRUCTION = [
+  { section:"PC. Nature du projet", question:"Type de projet ?", options:["Construction neuve","Extension / Surélévation","Projet clé en main"] },
+  { section:"PC. Nature du projet", question:"Bâtiment concerné ?", options:["Maison individuelle","Immeuble d’habitation","Bâtiment commercial","Bureaux","Entrepôt / atelier"] },
+  { section:"PC. Dimensions", question:"Surface totale approximative ?", options:["<50 m²","50–100 m²","100–200 m²","200–500 m²","500+ m²"] },
+  { section:"PC. Dimensions", question:"Nombre de niveaux ?", options:["RDC seul","R+1","R+2","R+3 et +"] },
+  { section:"PC. Terrain", question:"Terrain disponible ?", options:["Oui","Non","En cours d’acquisition"] },
+  { section:"PC. Terrain", question:"Étude de sol ?", options:["Oui – disponible","Non","À faire"] },
+  { section:"PC. Plans", question:"Plans disponibles ?", options:["Oui – architecte","Oui – croquis","Non"] },
+  { section:"PC. Administratif", question:"Permis de construire ?", options:["Oui obtenu","Oui en cours","Non","Non requis"] },
+  { section:"PC. Phase à chiffrer", question:"Phase demandée ?", options:["Études / conception","Fondations","Gros œuvre","Second œuvre","Finitions","Projet complet"] },
+  { section:"PC. Logistique", question:"Accès chantier ?", options:["Accès camion facile","Accès moyen","Accès difficile"] },
+  { section:"PC. Logistique", question:"Eau & électricité disponibles ?", options:["Oui les deux","Eau seulement","Électricité seulement","Aucun"] },
+  { section:"PC. Budget / Délais", question:"Budget estimatif ?", options:["<5 M","5–10 M","10–25 M","25–50 M","50 M+","À définir"] },
+  { section:"PC. Budget / Délais", question:"Délai souhaité ?", options:["Urgent","1–3 mois","3–6 mois","6–12 mois","12 mois+"] }
+];
+
+const QUESTIONNAIRE_RENOVATION = [
+  { section:"PR. Nature du projet", question:"Type de rénovation ?", options:["Rénovation complète","Rénovation partielle","Réhabilitation lourde"] },
+  { section:"PR. Bâtiment", question:"Bâtiment concerné ?", options:["Maison","Appartement","Immeuble","Commerce / bureaux"] },
+  { section:"PR. Âge / état", question:"Âge du bâtiment ?", options:["<10 ans","10–30 ans","30–50 ans","50+ ans","Inconnu"] },
+  { section:"PR. Âge / état", question:"État général ?", options:["Bon","Moyen","Dégradé","Très dégradé"] },
+  { section:"PR. Structure", question:"Structure touchée ?", options:["Non","Oui – murs porteurs","Oui – planchers","Oui – toiture","Inconnu"] },
+  { section:"PR. Risques", question:"Présence amiante / plomb ?", options:["Oui","Non","Inconnu"] },
+  { section:"PR. Occupation", question:"Bâtiment occupé pendant travaux ?", options:["Oui","Non","Partiellement"] },
+  { section:"PR. Surfaces", question:"Surface concernée ?", options:["<50 m²","50–100 m²","100–200 m²","200+ m²"] },
+  {
+    section: "PR. Lots",
+    question: "Lots à rénover ? (choix multiple)",
+    type: "checkboxes",
+    options: [
+      "Gros œuvre","Plomberie","Électricité","Climatisation","Menuiseries","Peinture","Carrelage",
+      "Toiture","Étanchéité","Voirie et Réseaux Divers / Extérieurs","Plâtrerie / Faux plafond",
+      "Serrurerie","Cuisine","Salle de bain","Tout"
+    ]
+  },
+  { section:"PR. Objectif", question:"Objectif principal ?", options:["Remise à neuf","Modernisation","Mise en conformité","Réparation dégâts (eau/feu)"] },
+  { section:"PR. Logistique", question:"Accès chantier ?", options:["Accès camion facile","Accès moyen","Accès difficile"] },
+  { section:"PR. Budget / Délais", question:"Budget estimatif ?", options:["<5 M","5–10 M","10–25 M","25–50 M","50 M+","À définir"] },
+  { section:"PR. Budget / Délais", question:"Délai souhaité ?", options:["Urgent","1–3 mois","3–6 mois","6–12 mois","12 mois+"] }
+];
+
+const quartiersYaounde = [
+  'Akono','Angangueo','Anguissa','Bastos','Biteng','Biyem-Assi','Briqueterie',
+  'Camp SIC Hippodrome','Camp-Sonel','Carrière','Cité Verte','Condengui','Damas',
+  'Ebogo','Efog-Ateba','Efoulan','Ekoudou','Ekounou','Emana','Emonbo','Essos',
+  'Etoa-Meki','Etoug-Ebe','Etoudi','Fouda','Jean-Vespa','Kondengui','Koweit City',
+  'Maison Blanche','Mbankolo','Mbimi','Mballa 2','Mehandan','Melen','Mefou','Mendong',
+  'Mfandena','Mimboman','Mini-ferme','Minkama','Mokolo','Mvan','Mvog Ada',
+  'Mvog Atangana Mballa','Mvog-Betsi','Mvog-Mbi','Mvolyé','Ndzana','Ngoa Ekélé',
+  'Ngola','Ngousso','Ngoumou','Nkol-Ewoue','Nkol-Ewouelle','Nkolbisson','Nkoldongo',
+  'Nkolmesseng','Nkolndongo','Nkom Kana','Nkometou','Nkomo','Nlongkak','Nkolbikok',
+  'Nkolzol','Nkolzol II','Nlongkwa','Nlongmeko’o','Nlongmeko','Nlongola','Nyom',
+  'Obili','Obobogo','Odza','Olembé','Olézoa','Oliga','Omnisports','Oyom-Abang',
+  'Plateau Atemengue','Poste Centrale','Santa Barbara','Simbock','Tam-Tam Weekend',
+  'Tongolo','Tsinga','Village Mvog Ada','Yaoundé Centre','Zamakoe','Messa','Eleveur'
+];
+
+const quartiersDouala = [
+  'Aéroport','Akra Kombo','Babylone I','Babylone II','Bali','Bangue','Beedi','Bepanda',
+  'Bessengue','Besseke','Bikoro','Bilongue','Bilingue','Bobongo','Boko','Bomkul',
+  'Bona Bekombo','Bonabeyike','Bonadiwoto','Bonadouma','Bonadoumbé','Bonadibong',
+  'Bonagang','Bonajang','Bonajinje','Bonakouamouang','Bonakeke Akwa','Bonalembe',
+  'Bonamatoumbe','Bonambappe','Bonaminkano','Bonamoussadi','Bonamoudourou',
+  'Bonamouti','Bonamouti Akwa 2','Bonanjo','Bonanloka','Bonangando','Bonapriso',
+  'Bonassama','Bonateki','Bonatene','Bonelang','Bonoleke','Bonoumbé','Bonutongo',
+  'Brazzaville','Bu','Bwapé','Cacao-Barry','Cap Cameroun','C.C.C.','Cité Berge',
+  'Cité de la Paix','Cité des palmiers','Cité Sic','Congo','Dahomey','Deïdo',
+  'Dibom','Dikahe','Djébalè','Emene City','Epaka I','Epaka II','Gentil','Grand Moulin',
+  'Hydrocarbures','Japoma','Jourdain','Kassalafam','Kombo Bouma','Kombo Moukoko',
+  'Kondi','Koo','Kotto','Koumassi','Lagos Market','Lendi','Logbaba','Logbessou','Logpom',
+  'Lycée de New Bell','Madiba','Makepe','Malangue','Mambanda','Manike','Manoka','Massadi',
+  'Matanda','Mbam Ewondo','Mbanga Bakoko','Mbengue City','Mbénadikoumé','Moungangué',
+  'Moukala Tanda','Ndogbati','Ndogbong','Ndoghem','Ndoghem II','Ndogmbe','Ndogpassi',
+  'Ndogsimbi','Ndobo','Ndokoti','Ndjong-Mebi','Ngangue','Ngodi','Ngoma','Ngwelé',
+  'Nguereck','Nguibassal','Nkomba','Nkongmondo','Nkongui','Nkololoun','NKondi',
+  "Nouvelle zone d'Akwa Nord",'Nouvelle zone de New-Deido','Number One Creek',
+  'Nyalla','Nyangadou','Nylon','Oyack','Petit Toubé','Pk 7','Pk 9','Pk 10','Pk 11',
+  'Pk 17','Pk 21','Plateau Joss','Pom Lien','Prison centrale de New Bell','Sabenjongo',
+  'Sincatex','So-Boum','Sodiko','Sodikombo','Sobikago','Song-Mahop','Song-Ngongag',
+  'Sopom','Source','T.S.F','Tergal','Village','Youpwé'
+];
+
+////////////////////////////////////////////////////////////
+// 3. RÉFÉRENCES DOM
+////////////////////////////////////////////////////////////
+const typeClient = document.getElementById("typeClient");
+const clientPrive = document.getElementById("clientPrive");
+const clientEntreprise = document.getElementById("clientEntreprise");
+
+const nomPrive = document.getElementById("nomPrive");
+const telephonePrive = document.getElementById("telephonePrive");
+const emailPrive = document.getElementById("emailPrive");
+
+const nomEntreprise = document.getElementById("nomEntreprise");
+const nui = document.getElementById("nui");
+const rccm = document.getElementById("rccm");
+const siege = document.getElementById("siege");
+const telephoneEntreprise = document.getElementById("telephoneEntreprise");
+const emailEntreprise = document.getElementById("emailEntreprise");
+
+const villeSelect = document.getElementById('ville');
+const villeAutre = document.getElementById('villeAutre');
+const quartierInput = document.getElementById('quartier');
+const quartierResults = document.getElementById('quartierResults');
+const lieudit = document.getElementById('lieudit');
+
+const intervention = document.getElementById("intervention");
+const sectionDisponibilites = document.getElementById("sectionDisponibilites");
+const sectionDateSouhaitee = document.getElementById("sectionDateSouhaitee");
+
+const c1 = document.getElementById("c1");
+const c2 = document.getElementById("c2");
+const c3 = document.getElementById("c3");
+const dateSouhaitee = document.getElementById("dateSouhaitee");
+
+const description = document.getElementById("description");
+const photosInput = document.getElementById("photos");
+const photoPreview = document.getElementById("photoPreview");
+
+const metiersContainer = document.getElementById("metiersContainer");
+const addMetierBtn = document.querySelector(".addMetierBtn");
+const titlePoint4 = document.getElementById("titlePoint4");
+const descPoint4  = document.getElementById("descPoint4");
+
+const projetContainer = document.getElementById("projetContainer");
+const projetTitle = document.getElementById("projetTitle");
+const projetQuestions = document.getElementById("projetQuestions");
+const projetDescription = document.getElementById("projetDescription");
+
+let quartiersActifs = [];
+let compteurMetiers = 0;
+
+////////////////////////////////////////////////////////////
+// 4. AFFICHAGE PRIVÉ / ENTREPRISE
+////////////////////////////////////////////////////////////
+function refreshClientTypeUI() {
+  const v = typeClient.value;
+  clientPrive.style.display = (v === "prive") ? "block" : "none";
+  clientEntreprise.style.display = (v === "entreprise") ? "block" : "none";
+}
+typeClient.addEventListener("change", refreshClientTypeUI);
+refreshClientTypeUI();
+
+////////////////////////////////////////////////////////////
+// 5. AUTOCOMPLETE QUARTIERS
+////////////////////////////////////////////////////////////
+villeSelect.addEventListener('change', () => {
+  villeAutre.style.display = (villeSelect.value === 'Autre') ? 'block' : 'none';
+
+  quartiersActifs =
+    villeSelect.value === "Yaoundé" ? quartiersYaounde :
+    villeSelect.value === "Douala" ? quartiersDouala :
+    [];
+
+  quartierInput.value = "";
+  quartierResults.innerHTML = "";
+  quartierResults.style.display = "none";
+});
+
+quartierInput.addEventListener('input', () => {
+  const term = quartierInput.value.toLowerCase();
+  quartierResults.innerHTML = "";
+
+  if (!term || quartiersActifs.length === 0) {
+    quartierResults.style.display = 'none';
+    return;
+  }
+
+  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term));
+  if (!filtered.length) {
+    quartierResults.style.display = 'none';
+    return;
+  }
+
+  filtered.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'autocomplete-item';
+    div.textContent = q;
+    div.onclick = () => {
+      quartierInput.value = q;
+      quartierResults.style.display = 'none';
+    };
+    quartierResults.appendChild(div);
+  });
+
+  quartierResults.style.display = 'block';
+});
+
+document.addEventListener('click', e => {
+  if (!quartierResults.contains(e.target) && e.target !== quartierInput) {
+    quartierResults.style.display = 'none';
+  }
+});
+
+////////////////////////////////////////////////////////////
+// 6. PHOTOS — PREVIEW
+////////////////////////////////////////////////////////////
+photosInput.addEventListener("change", () => {
+  photoPreview.innerHTML = "";
+  Array.from(photosInput.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement("img");
+      img.src = e.target.result;
+      photoPreview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+////////////////////////////////////////////////////////////
+// 7. POINT 4 : SWITCH MODE PROJET
+////////////////////////////////////////////////////////////
+function isProjetConstruction() {
+  return intervention.value === "Projet de construction complète";
+}
+function isProjetRenovation() {
+  return intervention.value === "Projet de rénovation";
+}
+function isProjetBatiment() {
+  return isProjetConstruction() || isProjetRenovation();
+}
+
+function renderQuestionnaireProjet(list, title) {
+  projetTitle.textContent = title;
+  projetQuestions.innerHTML = "";
+
+  list.forEach((item) => {
+    const h = document.createElement("h4");
+    h.textContent = item.section;
+    projetQuestions.appendChild(h);
+
+    const label = document.createElement("label");
+    label.style.display = "block";
+    label.style.fontWeight = "bold";
+    label.style.marginBottom = "6px";
+    label.textContent = item.question;
+    projetQuestions.appendChild(label);
+
+    if (item.type === "checkboxes") {
+      const wrap = document.createElement("div");
+      wrap.className = "projetCheckboxWrap";
+      wrap.dataset.question = item.question;
+
+      item.options.forEach((optText) => {
+        const row = document.createElement("label");
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.className = "projetQuestionCheckbox";
+        cb.dataset.question = item.question;
+        cb.value = optText;
+
+        cb.addEventListener("change", () => {
+          const allCbs = wrap.querySelectorAll('input[type="checkbox"]');
+          const isTout = cb.value.toLowerCase() === "tout";
+
+          if (cb.checked && isTout) {
+            allCbs.forEach(x => { if (x !== cb) x.checked = false; });
+          } else if (cb.checked && !isTout) {
+            allCbs.forEach(x => { if (x.value.toLowerCase() === "tout") x.checked = false; });
+          }
+        });
+
+        const span = document.createElement("span");
+        span.textContent = optText;
+
+        row.appendChild(cb);
+        row.appendChild(span);
+        wrap.appendChild(row);
+      });
+
+      projetQuestions.appendChild(wrap);
+      return;
+    }
+
+    const select = document.createElement("select");
+    select.className = "projetQuestionSelect";
+    select.dataset.question = item.question;
+
+    select.innerHTML = `<option value="">Sélectionner...</option>`;
+
+    (item.options || []).forEach(o => {
+      const opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = o;
+      select.appendChild(opt);
+    });
+
+    const optAutre = document.createElement("option");
+    optAutre.value = "Autre";
+    optAutre.textContent = "Autre";
+    select.appendChild(optAutre);
+
+    projetQuestions.appendChild(select);
+  });
+}
+
+function refreshPoint4UI() {
+  if (isProjetConstruction()) {
+    if (titlePoint4) titlePoint4.textContent = "4. Projet";
+    if (descPoint4) descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de construction.";
+
+    metiersContainer.style.display = "none";
+    addMetierBtn.style.display = "none";
+
+    projetContainer.style.display = "block";
+    renderQuestionnaireProjet(QUESTIONNAIRE_CONSTRUCTION, "Questionnaire projet — Construction complète");
+    return;
+  }
+
+  if (isProjetRenovation()) {
+    if (titlePoint4) titlePoint4.textContent = "4. Projet";
+    if (descPoint4) descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de rénovation.";
+
+    metiersContainer.style.display = "none";
+    addMetierBtn.style.display = "none";
+
+    projetContainer.style.display = "block";
+    renderQuestionnaireProjet(QUESTIONNAIRE_RENOVATION, "Questionnaire projet — Rénovation");
+    return;
+  }
+
+  if (titlePoint4) titlePoint4.textContent = "4. Corps de métier";
+  if (descPoint4) descPoint4.textContent = "Vous pouvez ajouter plusieurs métiers si nécessaire.";
+
+  projetContainer.style.display = "none";
+  projetQuestions.innerHTML = "";
+  projetDescription.value = "";
+
+  metiersContainer.style.display = "block";
+  addMetierBtn.style.display = "block";
+}
+
+intervention.addEventListener("change", () => {
+  refreshPoint4UI();
+  majAffichageMainsOeuvre();
+});
+refreshPoint4UI();
+
+////////////////////////////////////////////////////////////
+// 8. MULTI-MÉTIERS
+////////////////////////////////////////////////////////////
+function ajouterMetier() {
+  compteurMetiers++;
+
+  const block = document.createElement("div");
+  block.className = "metierBlock";
+  block.id = "metierBlock_" + compteurMetiers;
+
+  block.innerHTML = `
+    <h3>Métier #${compteurMetiers}</h3>
+
+    <select class="metierSelect" data-id="${compteurMetiers}">
+      <option value="">Sélectionner...</option>
+      ${Object.keys(data).map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("")}
+      <option value="Autre">Autre</option>
+    </select>
+
+    <div class="questionsTechniques" id="questions_${compteurMetiers}"></div>
+
+    <textarea class="descMetier" id="descMetier_${compteurMetiers}" placeholder="Description spécifique du métier"></textarea>
+
+    <div class="moExtras" id="mo_${compteurMetiers}" style="display:none;">
+      <h4>${escapeHtml(LIB_MO)} – Informations supplémentaires</h4>
+
+      <label>Nombre de techniciens nécessaires</label>
+      <input type="number" id="techniciens_${compteurMetiers}" min="1" placeholder="Ex : 3">
+
+      <label>Forfait par jour (Main d'œuvre)</label>
+      <input type="text" id="forfait_${compteurMetiers}" placeholder="Ex : 50 000 FCFA / jour">
+
+      <label>Vous prenez en charge l'hébergement ?</label>
+      <select id="hebergement_${compteurMetiers}">
+        <option value="">Sélectionner...</option>
+        <option value="Oui">Oui</option>
+        <option value="Non">Non</option>
+      </select>
+
+      <label>Date début de prestation</label>
+      <input type="date" id="debut_${compteurMetiers}">
+
+      <label>Date fin de prestation</label>
+      <input type="date" id="fin_${compteurMetiers}">
+    </div>
+
+    <button type="button" class="removeMetierBtn" onclick="supprimerMetier(${compteurMetiers})">
+      ❌ Supprimer ce métier
+    </button>
+  `;
+
+  metiersContainer.appendChild(block);
+  majAffichageMainsOeuvre();
+}
+
+function supprimerMetier(id) {
+  const el = document.getElementById("metierBlock_" + id);
+  if (el) el.remove();
+}
+
+document.addEventListener("change", function(e) {
+  if (!e.target.classList.contains("metierSelect")) return;
+
+  const id = e.target.dataset.id;
+  const metier = e.target.value;
+  const container = document.getElementById("questions_" + id);
+
+  container.innerHTML = "";
+  if (!metier || metier === "Autre" || !data[metier]) return;
+
+  data[metier].forEach(item => {
+    const h = document.createElement("h4");
+    h.textContent = item.section;
+    container.appendChild(h);
+
+    const label = document.createElement("label");
+    label.textContent = item.question;
+    container.appendChild(label);
+
+    const select = document.createElement("select");
+    select.className = "questionSelect";
+    select.dataset.metierId = id;
+    select.dataset.question = item.question;
+
+    select.innerHTML = `<option value="">Sélectionner...</option>`;
+    item.options.forEach(o => {
+      const opt = document.createElement("option");
+      opt.value = o;
+      opt.textContent = o;
+      select.appendChild(opt);
+    });
+
+    const optAutre = document.createElement("option");
+    optAutre.value = "Autre";
+    optAutre.textContent = "Autre";
+    select.appendChild(optAutre);
+
+    container.appendChild(select);
+  });
+});
+
+////////////////////////////////////////////////////////////
+// 9. LOGIQUE MO <=> sections 7 & 8
+////////////////////////////////////////////////////////////
+function majAffichageMainsOeuvre() {
+  const isMO = (intervention.value === LIB_MO);
+  sectionDisponibilites.style.display = isMO ? "none" : "block";
+  sectionDateSouhaitee.style.display = isMO ? "none" : "block";
+
+  document.querySelectorAll(".moExtras").forEach(div => {
+    div.style.display = isMO ? "block" : "none";
+  });
+}
+majAffichageMainsOeuvre();
+
+////////////////////////////////////////////////////////////
+// 10. ENVOI + WHATSAPP COMPLET
+////////////////////////////////////////////////////////////
+async function submitForm() {
+  // Photos -> base64
+  const photosBase64 = await Promise.all(
+    Array.from(photosInput.files).map(file =>
+      toBase64(file).then(b64 => ({
+        filename: file.name,
+        mimeType: file.type,
+        base64: b64.split(",")[1]
+      }))
+    )
+  );
+
+  // Métiers (si pas projet)
+  const metiers = [];
+  if (!isProjetBatiment()) {
+    document.querySelectorAll(".metierBlock").forEach(block => {
+      const id = block.id.split("_")[1];
+      const metier = block.querySelector(".metierSelect")?.value;
+      if (!metier) return;
+
+      const desc = block.querySelector(".descMetier")?.value || "";
+
+      const reponses = {};
+      block.querySelectorAll(".questionSelect").forEach(sel => {
+        reponses[ sel.dataset.question ] = sel.value;
+      });
+
+      metiers.push({
+        metier,
+        description: desc,
+        questions: reponses,
+        forfait: document.getElementById(`forfait_${id}`)?.value || null,
+        hebergement: document.getElementById(`hebergement_${id}`)?.value || null,
+        techniciens: document.getElementById(`techniciens_${id}`)?.value || null,
+        debut: document.getElementById(`debut_${id}`)?.value || null,
+        fin: document.getElementById(`fin_${id}`)?.value || null
+      });
+    });
+  }
+
+  // Projet (si construction/rénovation)
+  let projet = null;
+  if (isProjetBatiment()) {
+    const projetReponses = {};
+
+    document.querySelectorAll(".projetQuestionSelect").forEach(sel => {
+      projetReponses[sel.dataset.question] = sel.value;
+    });
+
+    const checkedMap = {};
+    document.querySelectorAll(".projetQuestionCheckbox:checked").forEach(cb => {
+      const q = cb.dataset.question;
+      if (!checkedMap[q]) checkedMap[q] = [];
+      checkedMap[q].push(cb.value);
+    });
+
+    Object.keys(checkedMap).forEach(q => {
+      projetReponses[q] = checkedMap[q];
+    });
+
+    projet = {
+      type: isProjetConstruction() ? "construction" : "renovation",
+      questions: projetReponses,
+      description: projetDescription.value || ""
+    };
+  }
+
+  const isMO = (intervention.value === LIB_MO);
+
+  const payload = {
+    typeClient: typeClient.value,
+    nom: typeClient.value === "prive" ? (nomPrive?.value || "") : (nomEntreprise?.value || ""),
+    telephone: typeClient.value === "prive" ? (telephonePrive?.value || "") : (telephoneEntreprise?.value || ""),
+    email: typeClient.value === "prive" ? (emailPrive?.value || "") : (emailEntreprise?.value || ""),
+
+    telephonePrive: typeClient.value === "prive" ? (telephonePrive?.value || "") : null,
+    emailPrive: typeClient.value === "prive" ? (emailPrive?.value || "") : null,
+
+    nomEntreprise: typeClient.value === "entreprise" ? (nomEntreprise?.value || "") : null,
+    nui: typeClient.value === "entreprise" ? (nui?.value || "") : null,
+    rccm: typeClient.value === "entreprise" ? (rccm?.value || "") : null,
+    siege: typeClient.value === "entreprise" ? (siege?.value || "") : null,
+    telephoneEntreprise: typeClient.value === "entreprise" ? (telephoneEntreprise?.value || "") : null,
+    emailEntreprise: typeClient.value === "entreprise" ? (emailEntreprise?.value || "") : null,
+
+    ville: (villeSelect.value === "Autre") ? (villeAutre.value || "") : villeSelect.value,
+    quartier: quartierInput.value,
+    lieudit: lieudit.value,
+
+    intervention: intervention.value,
+
+    c1: isMO ? null : c1.value,
+    c2: isMO ? null : c2.value,
+    c3: isMO ? null : c3.value,
+    dateSouhaitee: isMO ? null : dateSouhaitee.value,
+
+    description: description.value,
+
+    metiers,
+    projet,
+
+    photos: photosBase64
+  };
+
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3gMR9prwYEyPcbVQUPao7-tHt1R2h_JmD8B68OVVTWZA57p2TL2nYODeuqoO1qeHg/exec";
+
+  let response;
+  try {
+    response = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (err) {
+    alert("❌ Impossible d’envoyer la requête : " + err);
+    return;
+  }
+
+  let res;
+  try {
+    res = await response.json();
+  } catch (err) {
+    alert("❌ Réponse serveur illisible : " + err);
+    return;
+  }
+
+  if (!res.success) {
+    alert("❌ Erreur serveur : " + res.error);
+    console.log("ERREUR SERVEUR :", res.error);
+    return;
+  }
+
+  const ticket = res.ticket;
+  const folderUrl = res.folderUrl || "";
+  const pdfUrl = res.pdfUrl || "";
+
+  // WhatsApp COMPLET (toutes réponses)
+  let blocProjetOuMetiers = "";
+  if (payload.projet) {
+    blocProjetOuMetiers =
+      `🏗️ PROJET : ${payload.projet.type.toUpperCase()}\n` +
+      (formatKV(payload.projet.questions, "") || "• (Aucune réponse)") + "\n" +
+      `• Description projet : ${safeStr(payload.projet.description)}`;
+  } else {
+    const ms = payload.metiers || [];
+    if (!ms.length) {
+      blocProjetOuMetiers = "🧰 Métiers : -";
+    } else {
+      blocProjetOuMetiers = "🧰 MÉTIERS (détails)\n" + ms.map((m, idx) => {
+        const qLines = formatKV(m.questions || {}, "  ");
+        const moLines = (payload.intervention === LIB_MO)
+          ? [
+              `  • Techniciens : ${safeStr(m.techniciens || "NC")}`,
+              `  • Forfait/jour : ${safeStr(m.forfait || "NC")}`,
+              `  • Hébergement : ${safeStr(m.hebergement || "NC")}`,
+              `  • Début : ${safeStr(m.debut || "NC")}`,
+              `  • Fin : ${safeStr(m.fin || "NC")}`
+            ].join("\n")
+          : "";
+
+        return [
+          `— Métier #${idx+1} : ${safeStr(m.metier)}`,
+          qLines ? `  Questions:\n${qLines}` : "  Questions: (aucune)",
+          `  • Description : ${safeStr(m.description || "")}`,
+          moLines ? `  ${LIB_MO}:\n${moLines}` : ""
+        ].filter(Boolean).join("\n");
+      }).join("\n\n");
+    }
+  }
+
+  const dispoBlock = (payload.intervention === LIB_MO)
+    ? `📅 Disponibilités : (non demandées en mode ${LIB_MO})`
+    : `📅 Disponibilités :
+• C1 : ${safeStr(payload.c1)}
+• C2 : ${safeStr(payload.c2)}
+• C3 : ${safeStr(payload.c3)}
+• Date souhaitée : ${safeStr(payload.dateSouhaitee)}`;
+
+  const message = `
+🔥 DEMANDE QEMWORK (#${ticket})
+
+👤 Client
+• Type : ${safeStr(payload.typeClient)}
+• Nom : ${safeStr(payload.nom)}
+• Téléphone : ${safeStr(payload.telephone)}
+• Email : ${safeStr(payload.email)}
+
+📍 Chantier
+• Ville : ${safeStr(payload.ville)}
+• Quartier : ${safeStr(payload.quartier)}
+• Lieu dit : ${safeStr(payload.lieudit)}
+
+🧾 Intervention
+• Type : ${safeStr(payload.intervention)}
+
+${dispoBlock}
+
+${blocProjetOuMetiers}
+
+📝 Description
+${safeStr(payload.description)}
+
+📎 Drive
+• Dossier : ${folderUrl}
+• PDF : ${pdfUrl}
+`.trim();
+
+  const url = `https://wa.me/237676591725?text=${encodeURIComponent(message)}`;
+  window.open(url, "_blank");
+
+  alert("✔️ Votre demande a été envoyée avec succès !");
+}
+
+////////////////////////////////////////////////////////////
+// 11. Conversion fichier → Base64
+////////////////////////////////////////////////////////////
+function toBase64(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+</script>
+</body>
+</html>
