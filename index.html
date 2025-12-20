@@ -8,70 +8,70 @@
   <style>
     body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; margin:0; }
     .container {
-        max-width:900px; margin:auto; background:white;
-        padding:25px; border-radius:12px;
-        box-shadow:0 3px 10px rgba(0,0,0,0.1);
+      max-width:900px; margin:auto; background:white;
+      padding:25px; border-radius:12px;
+      box-shadow:0 3px 10px rgba(0,0,0,0.1);
     }
     h1, h2, h3 { color:#1a1a1a; margin-bottom:6px; }
     .section-desc { color:#555; font-size:14px; margin:-6px 0 15px; }
     input, select, textarea {
-        width:100%; padding:10px;
-        margin-top:6px; margin-bottom:15px;
-        border:1px solid #ccc; border-radius:8px; background:#fafafa;
-        box-sizing: border-box;
+      width:100%; padding:10px;
+      margin-top:6px; margin-bottom:15px;
+      border:1px solid #ccc; border-radius:8px; background:#fafafa;
+      box-sizing: border-box;
     }
     textarea { min-height:120px; }
     button {
-        width:100%; padding:15px; background:#25D366;
-        border:none; border-radius:10px; font-size:18px;
-        color:white; font-weight:bold; cursor:pointer;
+      width:100%; padding:15px; background:#25D366;
+      border:none; border-radius:10px; font-size:18px;
+      color:white; font-weight:bold; cursor:pointer;
     }
     button:hover { background:#1ebe5d; }
     button:disabled { opacity:.7; cursor:not-allowed; }
 
     .addMetierBtn { background:#007bff; margin-bottom:20px; }
     .removeMetierBtn {
-        background:#dc3545;
-        padding:8px;
-        font-size:14px;
-        margin-top:-5px;
-        margin-bottom:10px;
+      background:#dc3545;
+      padding:8px;
+      font-size:14px;
+      margin-top:-5px;
+      margin-bottom:10px;
     }
     .metierBlock {
-        border:1px solid #ddd;
-        background:#fafafa;
-        padding:15px;
-        border-radius:10px;
-        margin-bottom:20px;
+      border:1px solid #ddd;
+      background:#fafafa;
+      padding:15px;
+      border-radius:10px;
+      margin-bottom:20px;
     }
 
     /* AUTOCOMPLETE */
     .autocomplete-container { position: relative; width: 100%; }
     .autocomplete-results {
-        position: absolute;
-        top: 100%; left: 0; right: 0;
-        background: white;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        max-height: 180px;
-        overflow-y: auto;
-        z-index: 50;
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 50;
     }
     .autocomplete-item { padding: 10px; cursor: pointer; }
     .autocomplete-item:hover { background: #f0f0f0; }
 
     #photoPreview img {
-        width:100px; height:100px;
-        object-fit:cover; border-radius:8px;
-        border:1px solid #ddd;
+      width:100px; height:100px;
+      object-fit:cover; border-radius:8px;
+      border:1px solid #ddd;
     }
 
     .moExtras {
-        margin-top:10px;
-        padding:10px;
-        border-radius:8px;
-        background:#eef8ff;
-        border:1px dashed #79a9ff;
+      margin-top:10px;
+      padding:10px;
+      border-radius:8px;
+      background:#eef8ff;
+      border:1px dashed #79a9ff;
     }
 
     /* ===== Checkboxes projet ===== */
@@ -95,9 +95,7 @@
     }
     .projetCheckboxWrap span { text-align: left; display: inline-block; line-height: 1.2; }
     .projetCheckboxWrap input[type="checkbox"] { width: auto; margin: 0; }
-    @media (max-width: 650px) {
-      .projetCheckboxWrap { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 650px) { .projetCheckboxWrap { grid-template-columns: 1fr; } }
   </style>
 </head>
 
@@ -209,6 +207,13 @@
 </div>
 
 <script>
+/* =========================================================
+   IMPORTANT: "Failed to fetch" vient presque toujours de CORS
+   (ou WebApp pas accessible / pas déployée / URL incorrecte).
+   Solution: ajouter des headers CORS côté Apps Script.
+   Ci-dessous: HTML + un PATCH Apps Script à coller.
+   ========================================================= */
+
 ////////////////////////////////////////////////////////////
 // 0. CONFIG
 ////////////////////////////////////////////////////////////
@@ -226,7 +231,6 @@ function escapeHtml(str) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-
 function formatKV(obj, indent = "") {
   const lines = [];
   Object.keys(obj || {}).forEach(k => {
@@ -237,11 +241,7 @@ function formatKV(obj, indent = "") {
   });
   return lines.join("\n");
 }
-
-function safeStr(x) {
-  return (x === null || x === undefined) ? "" : String(x);
-}
-
+function safeStr(x) { return (x === null || x === undefined) ? "" : String(x); }
 function toBase64(file) {
   return new Promise(resolve => {
     const reader = new FileReader();
@@ -432,7 +432,7 @@ const QUESTIONNAIRE_RENOVATION = [
 ////////////////////////////////////////////////////////////
 // 3. QUARTIERS (LISTES COMPLÈTES)
 ////////////////////////////////////////////////////////////
-const quartiersYaounde = [
+const quartiersYaounde = [/* ... liste complète ... */ 
   'Akono','Angangueo','Anguissa','Bastos','Biteng','Biyem-Assi','Briqueterie',
   'Camp SIC Hippodrome','Camp-Sonel','Carrière','Cité Verte','Condengui','Damas',
   'Ebogo','Efog-Ateba','Efoulan','Ekoudou','Ekounou','Emana','Emonbo','Essos',
@@ -447,8 +447,7 @@ const quartiersYaounde = [
   'Plateau Atemengue','Poste Centrale','Santa Barbara','Simbock','Tam-Tam Weekend',
   'Tongolo','Tsinga','Village Mvog Ada','Yaoundé Centre','Zamakoe','Messa','Eleveur'
 ];
-
-const quartiersDouala = [
+const quartiersDouala = [/* ... liste complète ... */
   'Aéroport','Akra Kombo','Babylone I','Babylone II','Bali','Bangue','Beedi','Bepanda',
   'Bessengue','Besseke','Bikoro','Bilongue','Bilingue','Bobongo','Boko','Bomkul',
   'Bona Bekombo','Bonabeyike','Bonadiwoto','Bonadouma','Bonadoumbé','Bonadibong',
@@ -474,7 +473,7 @@ const quartiersDouala = [
 ];
 
 ////////////////////////////////////////////////////////////
-// 4. RÉFÉRENCES DOM
+// 4. DOM
 ////////////////////////////////////////////////////////////
 const typeClient = document.getElementById("typeClient");
 const clientPrive = document.getElementById("clientPrive");
@@ -491,11 +490,11 @@ const siege = document.getElementById("siege");
 const telephoneEntreprise = document.getElementById("telephoneEntreprise");
 const emailEntreprise = document.getElementById("emailEntreprise");
 
-const villeSelect = document.getElementById('ville');
-const villeAutre = document.getElementById('villeAutre');
-const quartierInput = document.getElementById('quartier');
-const quartierResults = document.getElementById('quartierResults');
-const lieudit = document.getElementById('lieudit');
+const villeSelect = document.getElementById("ville");
+const villeAutre = document.getElementById("villeAutre");
+const quartierInput = document.getElementById("quartier");
+const quartierResults = document.getElementById("quartierResults");
+const lieudit = document.getElementById("lieudit");
 
 const intervention = document.getElementById("intervention");
 const sectionDisponibilites = document.getElementById("sectionDisponibilites");
@@ -512,6 +511,7 @@ const photoPreview = document.getElementById("photoPreview");
 
 const metiersContainer = document.getElementById("metiersContainer");
 const addMetierBtn = document.querySelector(".addMetierBtn");
+
 const titlePoint4 = document.getElementById("titlePoint4");
 const descPoint4  = document.getElementById("descPoint4");
 
@@ -526,7 +526,7 @@ let quartiersActifs = [];
 let compteurMetiers = 0;
 
 ////////////////////////////////////////////////////////////
-// 5. AFFICHAGE PRIVÉ / ENTREPRISE
+// 5. UI Client privé/entreprise
 ////////////////////////////////////////////////////////////
 function refreshClientTypeUI() {
   const v = typeClient.value;
@@ -537,62 +537,55 @@ typeClient.addEventListener("change", refreshClientTypeUI);
 refreshClientTypeUI();
 
 ////////////////////////////////////////////////////////////
-// 6. AUTOCOMPLETE QUARTIERS
+// 6. Autocomplete quartiers
 ////////////////////////////////////////////////////////////
-villeSelect.addEventListener('change', () => {
-  villeAutre.style.display = (villeSelect.value === 'Autre') ? 'block' : 'none';
-
+villeSelect.addEventListener("change", () => {
+  villeAutre.style.display = (villeSelect.value === "Autre") ? "block" : "none";
   quartiersActifs =
     villeSelect.value === "Yaoundé" ? quartiersYaounde :
     villeSelect.value === "Douala" ? quartiersDouala :
     [];
-
   quartierInput.value = "";
   quartierResults.innerHTML = "";
   quartierResults.style.display = "none";
 });
 
-quartierInput.addEventListener('input', () => {
+quartierInput.addEventListener("input", () => {
   const term = quartierInput.value.toLowerCase();
   quartierResults.innerHTML = "";
 
   if (!term || quartiersActifs.length === 0) {
-    quartierResults.style.display = 'none';
+    quartierResults.style.display = "none";
     return;
   }
 
-  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term));
+  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term)).slice(0, 30);
   if (!filtered.length) {
-    quartierResults.style.display = 'none';
+    quartierResults.style.display = "none";
     return;
   }
 
-  filtered.slice(0, 30).forEach(q => {
-    const div = document.createElement('div');
-    div.className = 'autocomplete-item';
+  filtered.forEach(q => {
+    const div = document.createElement("div");
+    div.className = "autocomplete-item";
     div.textContent = q;
-    div.onclick = () => {
-      quartierInput.value = q;
-      quartierResults.style.display = 'none';
-    };
+    div.onclick = () => { quartierInput.value = q; quartierResults.style.display = "none"; };
     quartierResults.appendChild(div);
   });
 
-  quartierResults.style.display = 'block';
+  quartierResults.style.display = "block";
 });
 
-document.addEventListener('click', e => {
-  if (!quartierResults.contains(e.target) && e.target !== quartierInput) {
-    quartierResults.style.display = 'none';
-  }
+document.addEventListener("click", e => {
+  if (!quartierResults.contains(e.target) && e.target !== quartierInput) quartierResults.style.display = "none";
 });
 
 ////////////////////////////////////////////////////////////
-// 7. PHOTOS — PREVIEW
+// 7. Photos preview
 ////////////////////////////////////////////////////////////
 photosInput.addEventListener("change", () => {
   photoPreview.innerHTML = "";
-  Array.from(photosInput.files).forEach(file => {
+  Array.from(photosInput.files || []).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = document.createElement("img");
@@ -604,17 +597,11 @@ photosInput.addEventListener("change", () => {
 });
 
 ////////////////////////////////////////////////////////////
-// 8. POINT 4 : SWITCH MODE PROJET
+// 8. Projet switch
 ////////////////////////////////////////////////////////////
-function isProjetConstruction() {
-  return intervention.value === "Projet de construction complète";
-}
-function isProjetRenovation() {
-  return intervention.value === "Projet de rénovation";
-}
-function isProjetBatiment() {
-  return isProjetConstruction() || isProjetRenovation();
-}
+function isProjetConstruction() { return intervention.value === "Projet de construction complète"; }
+function isProjetRenovation() { return intervention.value === "Projet de rénovation"; }
+function isProjetBatiment() { return isProjetConstruction() || isProjetRenovation(); }
 
 function renderQuestionnaireProjet(list, title) {
   projetTitle.textContent = title;
@@ -639,7 +626,6 @@ function renderQuestionnaireProjet(list, title) {
 
       item.options.forEach((optText) => {
         const row = document.createElement("label");
-
         const cb = document.createElement("input");
         cb.type = "checkbox";
         cb.className = "projetQuestionCheckbox";
@@ -649,17 +635,12 @@ function renderQuestionnaireProjet(list, title) {
         cb.addEventListener("change", () => {
           const allCbs = wrap.querySelectorAll('input[type="checkbox"]');
           const isTout = cb.value.toLowerCase() === "tout";
-
-          if (cb.checked && isTout) {
-            allCbs.forEach(x => { if (x !== cb) x.checked = false; });
-          } else if (cb.checked && !isTout) {
-            allCbs.forEach(x => { if (x.value.toLowerCase() === "tout") x.checked = false; });
-          }
+          if (cb.checked && isTout) allCbs.forEach(x => { if (x !== cb) x.checked = false; });
+          else if (cb.checked && !isTout) allCbs.forEach(x => { if (x.value.toLowerCase() === "tout") x.checked = false; });
         });
 
         const span = document.createElement("span");
         span.textContent = optText;
-
         row.appendChild(cb);
         row.appendChild(span);
         wrap.appendChild(row);
@@ -672,19 +653,14 @@ function renderQuestionnaireProjet(list, title) {
     const select = document.createElement("select");
     select.className = "projetQuestionSelect";
     select.dataset.question = item.question;
-
     select.innerHTML = `<option value="">Sélectionner...</option>`;
-
     (item.options || []).forEach(o => {
       const opt = document.createElement("option");
-      opt.value = o;
-      opt.textContent = o;
+      opt.value = o; opt.textContent = o;
       select.appendChild(opt);
     });
-
     const optAutre = document.createElement("option");
-    optAutre.value = "Autre";
-    optAutre.textContent = "Autre";
+    optAutre.value = "Autre"; optAutre.textContent = "Autre";
     select.appendChild(optAutre);
 
     projetQuestions.appendChild(select);
@@ -693,48 +669,37 @@ function renderQuestionnaireProjet(list, title) {
 
 function refreshPoint4UI() {
   if (isProjetConstruction()) {
-    if (titlePoint4) titlePoint4.textContent = "4. Projet";
-    if (descPoint4) descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de construction.";
-
+    titlePoint4.textContent = "4. Projet";
+    descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de construction.";
     metiersContainer.style.display = "none";
     addMetierBtn.style.display = "none";
-
     projetContainer.style.display = "block";
     renderQuestionnaireProjet(QUESTIONNAIRE_CONSTRUCTION, "Questionnaire projet — Construction complète");
     return;
   }
-
   if (isProjetRenovation()) {
-    if (titlePoint4) titlePoint4.textContent = "4. Projet";
-    if (descPoint4) descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de rénovation.";
-
+    titlePoint4.textContent = "4. Projet";
+    descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de rénovation.";
     metiersContainer.style.display = "none";
     addMetierBtn.style.display = "none";
-
     projetContainer.style.display = "block";
     renderQuestionnaireProjet(QUESTIONNAIRE_RENOVATION, "Questionnaire projet — Rénovation");
     return;
   }
-
-  if (titlePoint4) titlePoint4.textContent = "4. Corps de métier";
-  if (descPoint4) descPoint4.textContent = "Vous pouvez ajouter plusieurs métiers si nécessaire.";
-
+  titlePoint4.textContent = "4. Corps de métier";
+  descPoint4.textContent = "Vous pouvez ajouter plusieurs métiers si nécessaire.";
   projetContainer.style.display = "none";
   projetQuestions.innerHTML = "";
   projetDescription.value = "";
-
   metiersContainer.style.display = "block";
   addMetierBtn.style.display = "block";
 }
 
-intervention.addEventListener("change", () => {
-  refreshPoint4UI();
-  majAffichageMainsOeuvre();
-});
+intervention.addEventListener("change", () => { refreshPoint4UI(); majAffichageMainsOeuvre(); });
 refreshPoint4UI();
 
 ////////////////////////////////////////////////////////////
-// 9. MULTI-MÉTIERS
+// 9. Multi-métiers
 ////////////////////////////////////////////////////////////
 function ajouterMetier() {
   compteurMetiers++;
@@ -745,7 +710,6 @@ function ajouterMetier() {
 
   block.innerHTML = `
     <h3>Métier #${compteurMetiers}</h3>
-
     <select class="metierSelect" data-id="${compteurMetiers}">
       <option value="">Sélectionner...</option>
       ${Object.keys(data).map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("")}
@@ -758,32 +722,22 @@ function ajouterMetier() {
 
     <div class="moExtras" id="mo_${compteurMetiers}" style="display:none;">
       <h4>${escapeHtml(LIB_MO)} – Informations supplémentaires</h4>
-
       <label>Nombre de techniciens nécessaires</label>
       <input type="number" id="techniciens_${compteurMetiers}" min="1" placeholder="Ex : 3">
-
       <label>Forfait par jour (Main d'œuvre)</label>
       <input type="text" id="forfait_${compteurMetiers}" placeholder="Ex : 50 000 FCFA / jour">
-
       <label>Vous prenez en charge l'hébergement ?</label>
       <select id="hebergement_${compteurMetiers}">
-        <option value="">Sélectionner...</option>
-        <option value="Oui">Oui</option>
-        <option value="Non">Non</option>
+        <option value="">Sélectionner...</option><option value="Oui">Oui</option><option value="Non">Non</option>
       </select>
-
       <label>Date début de prestation</label>
       <input type="date" id="debut_${compteurMetiers}">
-
       <label>Date fin de prestation</label>
       <input type="date" id="fin_${compteurMetiers}">
     </div>
 
-    <button type="button" class="removeMetierBtn" onclick="supprimerMetier(${compteurMetiers})">
-      ❌ Supprimer ce métier
-    </button>
+    <button type="button" class="removeMetierBtn" onclick="supprimerMetier(${compteurMetiers})">❌ Supprimer ce métier</button>
   `;
-
   metiersContainer.appendChild(block);
   majAffichageMainsOeuvre();
 }
@@ -835,28 +789,29 @@ document.addEventListener("change", function(e) {
 });
 
 ////////////////////////////////////////////////////////////
-// 10. LOGIQUE MO <=> sections 7 & 8
+// 10. MO => cacher disponibilités + afficher extras
 ////////////////////////////////////////////////////////////
 function majAffichageMainsOeuvre() {
   const isMO = (intervention.value === LIB_MO);
   sectionDisponibilites.style.display = isMO ? "none" : "block";
   sectionDateSouhaitee.style.display = isMO ? "none" : "block";
-
-  document.querySelectorAll(".moExtras").forEach(div => {
-    div.style.display = isMO ? "block" : "none";
-  });
+  document.querySelectorAll(".moExtras").forEach(div => div.style.display = isMO ? "block" : "none");
 }
 majAffichageMainsOeuvre();
 
 ////////////////////////////////////////////////////////////
-// 11. ENVOI (FETCH) — sans erreur + réponse JSON
+// 11. SUBMIT (fetch robuste + message d'erreur explicite)
 ////////////////////////////////////////////////////////////
 async function submitForm() {
-  // basic guard
-  if (!typeClient.value) { alert("Merci de sélectionner le type de client."); return; }
-  if (!villeSelect.value) { alert("Merci de sélectionner une ville."); return; }
-  if (!lieudit.value) { alert("Merci de renseigner le lieu dit."); return; }
-  if (!intervention.value) { alert("Merci de sélectionner le type d’intervention."); return; }
+  // validations minimales
+  if (!typeClient.value) return alert("Merci de sélectionner le type de client.");
+  if (typeClient.value === "prive" && !telephonePrive.value && !emailPrive.value) return alert("Merci de renseigner au moins un contact (téléphone ou email).");
+  if (typeClient.value === "entreprise" && !telephoneEntreprise.value && !emailEntreprise.value) return alert("Merci de renseigner au moins un contact (téléphone ou email).");
+  if (!villeSelect.value) return alert("Merci de sélectionner une ville.");
+  if (villeSelect.value === "Autre" && !villeAutre.value.trim()) return alert("Merci de préciser la ville.");
+  if (!quartierInput.value.trim()) return alert("Merci de renseigner le quartier.");
+  if (!lieudit.value.trim()) return alert("Merci de renseigner le lieu dit.");
+  if (!intervention.value) return alert("Merci de sélectionner le type d’intervention.");
 
   sendBtn.disabled = true;
   const oldText = sendBtn.textContent;
@@ -868,13 +823,13 @@ async function submitForm() {
       Array.from(photosInput.files || []).map(file =>
         toBase64(file).then(b64 => ({
           filename: file.name,
-          mimeType: file.type,
-          base64: b64.split(",")[1]
+          mimeType: file.type || "image/jpeg",
+          base64: String(b64).split(",")[1] || ""
         }))
       )
     );
 
-    // Métiers (si pas projet)
+    // Métiers
     const metiers = [];
     if (!isProjetBatiment()) {
       document.querySelectorAll(".metierBlock").forEach(block => {
@@ -883,10 +838,9 @@ async function submitForm() {
         if (!metier) return;
 
         const desc = block.querySelector(".descMetier")?.value || "";
-
         const reponses = {};
         block.querySelectorAll(".questionSelect").forEach(sel => {
-          reponses[ sel.dataset.question ] = sel.value;
+          reponses[sel.dataset.question] = sel.value || "";
         });
 
         metiers.push({
@@ -902,13 +856,12 @@ async function submitForm() {
       });
     }
 
-    // Projet (si construction/rénovation)
+    // Projet
     let projet = null;
     if (isProjetBatiment()) {
       const projetReponses = {};
-
       document.querySelectorAll(".projetQuestionSelect").forEach(sel => {
-        projetReponses[sel.dataset.question] = sel.value;
+        projetReponses[sel.dataset.question] = sel.value || "";
       });
 
       const checkedMap = {};
@@ -917,10 +870,7 @@ async function submitForm() {
         if (!checkedMap[q]) checkedMap[q] = [];
         checkedMap[q].push(cb.value);
       });
-
-      Object.keys(checkedMap).forEach(q => {
-        projetReponses[q] = checkedMap[q];
-      });
+      Object.keys(checkedMap).forEach(q => { projetReponses[q] = checkedMap[q]; });
 
       projet = {
         type: isProjetConstruction() ? "construction" : "renovation",
@@ -933,142 +883,102 @@ async function submitForm() {
 
     const payload = {
       typeClient: typeClient.value,
-      nom: typeClient.value === "prive" ? (nomPrive?.value || "") : (nomEntreprise?.value || ""),
-      telephone: typeClient.value === "prive" ? (telephonePrive?.value || "") : (telephoneEntreprise?.value || ""),
-      email: typeClient.value === "prive" ? (emailPrive?.value || "") : (emailEntreprise?.value || ""),
+      nom: typeClient.value === "prive" ? (nomPrive.value || "") : (nomEntreprise.value || ""),
+      telephone: typeClient.value === "prive" ? (telephonePrive.value || "") : (telephoneEntreprise.value || ""),
+      email: typeClient.value === "prive" ? (emailPrive.value || "") : (emailEntreprise.value || ""),
 
-      telephonePrive: typeClient.value === "prive" ? (telephonePrive?.value || "") : null,
-      emailPrive: typeClient.value === "prive" ? (emailPrive?.value || "") : null,
-
-      nomEntreprise: typeClient.value === "entreprise" ? (nomEntreprise?.value || "") : null,
-      nui: typeClient.value === "entreprise" ? (nui?.value || "") : null,
-      rccm: typeClient.value === "entreprise" ? (rccm?.value || "") : null,
-      siege: typeClient.value === "entreprise" ? (siege?.value || "") : null,
-      telephoneEntreprise: typeClient.value === "entreprise" ? (telephoneEntreprise?.value || "") : null,
-      emailEntreprise: typeClient.value === "entreprise" ? (emailEntreprise?.value || "") : null,
+      nomEntreprise: typeClient.value === "entreprise" ? (nomEntreprise.value || "") : null,
+      nui: typeClient.value === "entreprise" ? (nui.value || "") : null,
+      rccm: typeClient.value === "entreprise" ? (rccm.value || "") : null,
+      siege: typeClient.value === "entreprise" ? (siege.value || "") : null,
 
       ville: (villeSelect.value === "Autre") ? (villeAutre.value || "") : villeSelect.value,
-      quartier: quartierInput.value,
-      lieudit: lieudit.value,
+      quartier: quartierInput.value || "",
+      lieudit: lieudit.value || "",
 
-      intervention: intervention.value,
-
+      intervention: intervention.value || "",
       c1: isMO ? null : (c1.value || null),
       c2: isMO ? null : (c2.value || null),
       c3: isMO ? null : (c3.value || null),
       dateSouhaitee: isMO ? null : (dateSouhaitee.value || null),
 
-      description: description.value,
-
+      description: description.value || "",
       metiers,
       projet,
       photos: photosBase64
     };
 
+    // ---- FETCH robuste: si CORS bloque, tu verras "TypeError: Failed to fetch"
+    // => tu DOIS ajouter CORS côté Apps Script (voir patch plus bas).
     const response = await fetch(SCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-      // mode: "cors" // inutile si WebApp renvoie les bons headers, mais ok si tu ajoutes CORS côté Apps Script
+      redirect: "follow"
     });
 
-    // si Apps Script renvoie parfois du texte, on tente JSON puis fallback
     const text = await response.text();
     let res;
-    try { res = JSON.parse(text); } catch { throw new Error("Réponse non JSON: " + text); }
+    try { res = JSON.parse(text); }
+    catch { throw new Error("Réponse serveur non JSON : " + text); }
 
     if (!response.ok) throw new Error("HTTP " + response.status + " — " + (res.error || text));
-    if (!res.success) throw new Error(res.error || "Erreur serveur inconnue");
+    if (!res.success) throw new Error(res.error || "Erreur serveur");
 
-    alert("✔️ Votre demande a été envoyée avec succès !\nTicket: " + (res.ticket || ""));
-
-    // WhatsApp interne (comme ancien HTML) — optionnel: commente si tu ne veux pas
-    const ticket = res.ticket || "";
-    const folderUrl = res.folderUrl || "";
-    const pdfUrl = res.pdfUrl || "";
-
-    let blocProjetOuMetiers = "";
-    if (payload.projet) {
-      blocProjetOuMetiers =
-        `🏗️ PROJET : ${payload.projet.type.toUpperCase()}\n` +
-        (formatKV(payload.projet.questions, "") || "• (Aucune réponse)") + "\n" +
-        `• Description projet : ${safeStr(payload.projet.description)}`;
-    } else {
-      const ms = payload.metiers || [];
-      if (!ms.length) {
-        blocProjetOuMetiers = "🧰 Métiers : -";
-      } else {
-        blocProjetOuMetiers = "🧰 MÉTIERS (détails)\n" + ms.map((m, idx) => {
-          const qLines = formatKV(m.questions || {}, "  ");
-          const moLines = (payload.intervention === LIB_MO)
-            ? [
-                `  • Techniciens : ${safeStr(m.techniciens || "NC")}`,
-                `  • Forfait/jour : ${safeStr(m.forfait || "NC")}`,
-                `  • Hébergement : ${safeStr(m.hebergement || "NC")}`,
-                `  • Début : ${safeStr(m.debut || "NC")}`,
-                `  • Fin : ${safeStr(m.fin || "NC")}`
-              ].join("\n")
-            : "";
-
-          return [
-            `— Métier #${idx+1} : ${safeStr(m.metier)}`,
-            qLines ? `  Questions:\n${qLines}` : "  Questions: (aucune)",
-            `  • Description : ${safeStr(m.description || "")}`,
-            moLines ? `  ${LIB_MO}:\n${moLines}` : ""
-          ].filter(Boolean).join("\n");
-        }).join("\n\n");
-      }
-    }
-
-    const dispoBlock = (payload.intervention === LIB_MO)
-      ? `📅 Disponibilités : (non demandées en mode ${LIB_MO})`
-      : `📅 Disponibilités :
-• C1 : ${safeStr(payload.c1)}
-• C2 : ${safeStr(payload.c2)}
-• C3 : ${safeStr(payload.c3)}
-• Date souhaitée : ${safeStr(payload.dateSouhaitee)}`;
-
-    const message = `
-🔥 DEMANDE QEMWORK (#${ticket})
-
-👤 Client
-• Type : ${safeStr(payload.typeClient)}
-• Nom : ${safeStr(payload.nom)}
-• Téléphone : ${safeStr(payload.telephone)}
-• Email : ${safeStr(payload.email)}
-
-📍 Chantier
-• Ville : ${safeStr(payload.ville)}
-• Quartier : ${safeStr(payload.quartier)}
-• Lieu dit : ${safeStr(payload.lieudit)}
-
-🧾 Intervention
-• Type : ${safeStr(payload.intervention)}
-
-${dispoBlock}
-
-${blocProjetOuMetiers}
-
-📝 Description
-${safeStr(payload.description)}
-
-📎 Drive
-• Dossier : ${folderUrl}
-• PDF : ${pdfUrl}
-`.trim();
-
-    // vers numéro interne
-    const url = `https://wa.me/237676591725?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
+    alert("✔️ Envoyé ! Ticket: " + (res.ticket || ""));
 
   } catch (err) {
     console.error(err);
-    alert("❌ Échec d’envoi : " + (err?.message || err));
+    alert("❌ Failed to fetch / CORS ou URL WebApp.\nDétail: " + (err?.message || err));
   } finally {
     sendBtn.disabled = false;
     sendBtn.textContent = oldText;
   }
 }
 </script>
+
+<!-- =======================================================
+     PATCH APPS SCRIPT (OBLIGATOIRE POUR CORRIGER Failed to fetch)
+     -> Ajoute CORS dans doGet/doPost/doOptions
+     -> Puis REDÉPLOIE la Web App (nouvelle version)
+===========================================================
+Dans ton Apps Script, remplace les retours par cette fonction helper:
+
+function corsJson(obj, statusCode){
+  const out = ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+  // Apps Script n'a pas setStatusCode, mais on peut renvoyer du JSON quand même.
+  return out
+    .setHeader("Access-Control-Allow-Origin", "*")
+    .setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
+function doOptions(e){
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader("Access-Control-Allow-Origin", "*")
+    .setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
+    .setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
+Puis dans doGet / doPost:
+
+function doGet(e){
+  return corsJson({success:true,message:"OK"});
+}
+
+Et à la fin de doPost (success):
+  return corsJson(result);
+
+Et dans le catch de doPost:
+  return corsJson({success:false,error:String(err)});
+
+IMPORTANT:
+1) Déployer > Gérer les déploiements > Nouvelle version
+2) Accès: "Tout le monde" (ou "Tout le monde avec le lien")
+3) Exécuter en tant que: "Moi"
+4) Utiliser la NOUVELLE URL /exec (celle du déploiement actif)
+======================================================= -->
 </body>
 </html>
