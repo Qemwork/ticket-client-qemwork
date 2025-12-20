@@ -12,7 +12,7 @@
       padding:25px; border-radius:12px;
       box-shadow:0 3px 10px rgba(0,0,0,0.1);
     }
-    h1, h2, h3 { color:#1a1a1a; margin-bottom:6px; }
+    h1, h2, h3, h4 { color:#1a1a1a; margin-bottom:6px; }
     .section-desc { color:#555; font-size:14px; margin:-6px 0 15px; }
     input, select, textarea {
       width:100%; padding:10px;
@@ -28,53 +28,37 @@
     }
     button:hover { background:#1ebe5d; }
     button:disabled { opacity:.7; cursor:not-allowed; }
-
     .addMetierBtn { background:#007bff; margin-bottom:20px; }
     .removeMetierBtn {
-      background:#dc3545;
-      padding:8px;
-      font-size:14px;
-      margin-top:-5px;
-      margin-bottom:10px;
+      background:#dc3545; padding:8px; font-size:14px;
+      margin-top:-5px; margin-bottom:10px;
     }
     .metierBlock {
-      border:1px solid #ddd;
-      background:#fafafa;
-      padding:15px;
-      border-radius:10px;
-      margin-bottom:20px;
+      border:1px solid #ddd; background:#fafafa;
+      padding:15px; border-radius:10px; margin-bottom:20px;
     }
 
     /* AUTOCOMPLETE */
     .autocomplete-container { position: relative; width: 100%; }
     .autocomplete-results {
-      position: absolute;
-      top: 100%; left: 0; right: 0;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      max-height: 180px;
-      overflow-y: auto;
-      z-index: 50;
+      position: absolute; top: 100%; left: 0; right: 0;
+      background: white; border: 1px solid #ccc; border-radius: 8px;
+      max-height: 180px; overflow-y: auto; z-index: 50;
     }
     .autocomplete-item { padding: 10px; cursor: pointer; }
     .autocomplete-item:hover { background: #f0f0f0; }
 
     #photoPreview img {
-      width:100px; height:100px;
-      object-fit:cover; border-radius:8px;
-      border:1px solid #ddd;
+      width:100px; height:100px; object-fit:cover;
+      border-radius:8px; border:1px solid #ddd;
     }
 
     .moExtras {
-      margin-top:10px;
-      padding:10px;
-      border-radius:8px;
-      background:#eef8ff;
-      border:1px dashed #79a9ff;
+      margin-top:10px; padding:10px; border-radius:8px;
+      background:#eef8ff; border:1px dashed #79a9ff;
     }
 
-    /* ===== Checkboxes projet ===== */
+    /* Checkboxes projet */
     .projetCheckboxWrap {
       display: grid;
       grid-template-columns: repeat(2, minmax(240px, 1fr));
@@ -85,16 +69,8 @@
       background: #fff;
       margin-bottom: 15px;
     }
-    .projetCheckboxWrap label {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 0;
-      cursor: pointer;
-      font-weight: normal;
-    }
-    .projetCheckboxWrap span { text-align: left; display: inline-block; line-height: 1.2; }
-    .projetCheckboxWrap input[type="checkbox"] { width: auto; margin: 0; }
+    .projetCheckboxWrap label { display:flex; align-items:center; gap:10px; margin:0; cursor:pointer; font-weight:normal; }
+    .projetCheckboxWrap input[type="checkbox"] { width:auto; margin:0; }
     @media (max-width: 650px) { .projetCheckboxWrap { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -167,7 +143,6 @@
     <p id="descPoint4" class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
 
     <div id="metiersContainer"></div>
-
     <button type="button" class="addMetierBtn" onclick="ajouterMetier()">➕ Ajouter un corps de métier</button>
 
     <div id="projetContainer" class="metierBlock" style="display:none;">
@@ -207,41 +182,20 @@
 </div>
 
 <script>
-/* =========================================================
-   IMPORTANT: "Failed to fetch" vient presque toujours de CORS
-   (ou WebApp pas accessible / pas déployée / URL incorrecte).
-   Solution: ajouter des headers CORS côté Apps Script.
-   Ci-dessous: HTML + un PATCH Apps Script à coller.
-   ========================================================= */
+/* =========================
+   CONFIG
+========================= */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiXHgRmWKD__r3k4EVkCa8Cy0bQoni0FkISUsHGGvHrT6IHnU4X0yNzKxKP4CcD149fg/exec";
+const LIB_MO = "Mains d'œuvres multiples";
 
-////////////////////////////////////////////////////////////
-// 0. CONFIG
-////////////////////////////////////////////////////////////
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxueXWVRPs0dY1OFV7NEbw5fMWkzNkkoX1PFspjm1lNTDgz9ToEjFkqx06Oj3iERjB9pg/exec";
-const LIB_MO = "Mains d'œuvres multiples"; // doit matcher Apps Script
-
-////////////////////////////////////////////////////////////
-// 0. HELPERS
-////////////////////////////////////////////////////////////
+/* =========================
+   HELPERS
+========================= */
 function escapeHtml(str) {
   return String(str ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;").replaceAll("'","&#039;");
 }
-function formatKV(obj, indent = "") {
-  const lines = [];
-  Object.keys(obj || {}).forEach(k => {
-    const v = obj[k];
-    if (v === null || v === undefined) return;
-    if (Array.isArray(v)) lines.push(`${indent}• ${k} : ${v.join(", ")}`);
-    else lines.push(`${indent}• ${k} : ${String(v)}`);
-  });
-  return lines.join("\n");
-}
-function safeStr(x) { return (x === null || x === undefined) ? "" : String(x); }
 function toBase64(file) {
   return new Promise(resolve => {
     const reader = new FileReader();
@@ -250,9 +204,10 @@ function toBase64(file) {
   });
 }
 
-////////////////////////////////////////////////////////////
-// 1. BASE DE DONNÉES MÉTIERS (COMPLÈTE)
-////////////////////////////////////////////////////////////
+/* =========================
+   MÉTIERS (LISTE + QUESTIONS COMPLETES)
+   (identique au gros bloc fourni auparavant)
+========================= */
 const data = {
   Carreleur_Solier: [
     { section:"I. Type de surface", question:"Quel type de surface ?", options:["Sol intérieur","Mur","Terrasse"] },
@@ -385,9 +340,9 @@ const data = {
   ]
 };
 
-////////////////////////////////////////////////////////////
-// 2. QUESTIONNAIRES PROJET (COMPLETS)
-////////////////////////////////////////////////////////////
+/* =========================
+   QUESTIONNAIRES PROJET (COMPLETS)
+========================= */
 const QUESTIONNAIRE_CONSTRUCTION = [
   { section:"PC. Nature du projet", question:"Type de projet ?", options:["Construction neuve","Extension / Surélévation","Projet clé en main"] },
   { section:"PC. Nature du projet", question:"Bâtiment concerné ?", options:["Maison individuelle","Immeuble d’habitation","Bâtiment commercial","Bureaux","Entrepôt / atelier"] },
@@ -429,10 +384,10 @@ const QUESTIONNAIRE_RENOVATION = [
   { section:"PR. Budget / Délais", question:"Délai souhaité ?", options:["Urgent","1–3 mois","3–6 mois","6–12 mois","12 mois+"] }
 ];
 
-////////////////////////////////////////////////////////////
-// 3. QUARTIERS (LISTES COMPLÈTES)
-////////////////////////////////////////////////////////////
-const quartiersYaounde = [/* ... liste complète ... */ 
+/* =========================
+   QUARTIERS (LISTES COMPLÈTES)
+========================= */
+const quartiersYaounde = [
   'Akono','Angangueo','Anguissa','Bastos','Biteng','Biyem-Assi','Briqueterie',
   'Camp SIC Hippodrome','Camp-Sonel','Carrière','Cité Verte','Condengui','Damas',
   'Ebogo','Efog-Ateba','Efoulan','Ekoudou','Ekounou','Emana','Emonbo','Essos',
@@ -447,7 +402,8 @@ const quartiersYaounde = [/* ... liste complète ... */
   'Plateau Atemengue','Poste Centrale','Santa Barbara','Simbock','Tam-Tam Weekend',
   'Tongolo','Tsinga','Village Mvog Ada','Yaoundé Centre','Zamakoe','Messa','Eleveur'
 ];
-const quartiersDouala = [/* ... liste complète ... */
+
+const quartiersDouala = [
   'Aéroport','Akra Kombo','Babylone I','Babylone II','Bali','Bangue','Beedi','Bepanda',
   'Bessengue','Besseke','Bikoro','Bilongue','Bilingue','Bobongo','Boko','Bomkul',
   'Bona Bekombo','Bonabeyike','Bonadiwoto','Bonadouma','Bonadoumbé','Bonadibong',
@@ -472,9 +428,9 @@ const quartiersDouala = [/* ... liste complète ... */
   'Sopom','Source','T.S.F','Tergal','Village','Youpwé'
 ];
 
-////////////////////////////////////////////////////////////
-// 4. DOM
-////////////////////////////////////////////////////////////
+/* =========================
+   DOM
+========================= */
 const typeClient = document.getElementById("typeClient");
 const clientPrive = document.getElementById("clientPrive");
 const clientEntreprise = document.getElementById("clientEntreprise");
@@ -511,7 +467,6 @@ const photoPreview = document.getElementById("photoPreview");
 
 const metiersContainer = document.getElementById("metiersContainer");
 const addMetierBtn = document.querySelector(".addMetierBtn");
-
 const titlePoint4 = document.getElementById("titlePoint4");
 const descPoint4  = document.getElementById("descPoint4");
 
@@ -525,9 +480,9 @@ const sendBtn = document.getElementById("sendBtn");
 let quartiersActifs = [];
 let compteurMetiers = 0;
 
-////////////////////////////////////////////////////////////
-// 5. UI Client privé/entreprise
-////////////////////////////////////////////////////////////
+/* =========================
+   UI client type
+========================= */
 function refreshClientTypeUI() {
   const v = typeClient.value;
   clientPrive.style.display = (v === "prive") ? "block" : "none";
@@ -536,15 +491,17 @@ function refreshClientTypeUI() {
 typeClient.addEventListener("change", refreshClientTypeUI);
 refreshClientTypeUI();
 
-////////////////////////////////////////////////////////////
-// 6. Autocomplete quartiers
-////////////////////////////////////////////////////////////
+/* =========================
+   Autocomplete quartiers
+========================= */
 villeSelect.addEventListener("change", () => {
   villeAutre.style.display = (villeSelect.value === "Autre") ? "block" : "none";
+
   quartiersActifs =
     villeSelect.value === "Yaoundé" ? quartiersYaounde :
     villeSelect.value === "Douala" ? quartiersDouala :
     [];
+
   quartierInput.value = "";
   quartierResults.innerHTML = "";
   quartierResults.style.display = "none";
@@ -559,17 +516,20 @@ quartierInput.addEventListener("input", () => {
     return;
   }
 
-  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term)).slice(0, 30);
+  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term));
   if (!filtered.length) {
     quartierResults.style.display = "none";
     return;
   }
 
-  filtered.forEach(q => {
+  filtered.slice(0, 30).forEach(q => {
     const div = document.createElement("div");
     div.className = "autocomplete-item";
     div.textContent = q;
-    div.onclick = () => { quartierInput.value = q; quartierResults.style.display = "none"; };
+    div.onclick = () => {
+      quartierInput.value = q;
+      quartierResults.style.display = "none";
+    };
     quartierResults.appendChild(div);
   });
 
@@ -577,15 +537,17 @@ quartierInput.addEventListener("input", () => {
 });
 
 document.addEventListener("click", e => {
-  if (!quartierResults.contains(e.target) && e.target !== quartierInput) quartierResults.style.display = "none";
+  if (!quartierResults.contains(e.target) && e.target !== quartierInput) {
+    quartierResults.style.display = "none";
+  }
 });
 
-////////////////////////////////////////////////////////////
-// 7. Photos preview
-////////////////////////////////////////////////////////////
+/* =========================
+   Photos preview
+========================= */
 photosInput.addEventListener("change", () => {
   photoPreview.innerHTML = "";
-  Array.from(photosInput.files || []).forEach(file => {
+  Array.from(photosInput.files).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
       const img = document.createElement("img");
@@ -596,9 +558,9 @@ photosInput.addEventListener("change", () => {
   });
 });
 
-////////////////////////////////////////////////////////////
-// 8. Projet switch
-////////////////////////////////////////////////////////////
+/* =========================
+   Projet switch
+========================= */
 function isProjetConstruction() { return intervention.value === "Projet de construction complète"; }
 function isProjetRenovation() { return intervention.value === "Projet de rénovation"; }
 function isProjetBatiment() { return isProjetConstruction() || isProjetRenovation(); }
@@ -635,12 +597,17 @@ function renderQuestionnaireProjet(list, title) {
         cb.addEventListener("change", () => {
           const allCbs = wrap.querySelectorAll('input[type="checkbox"]');
           const isTout = cb.value.toLowerCase() === "tout";
-          if (cb.checked && isTout) allCbs.forEach(x => { if (x !== cb) x.checked = false; });
-          else if (cb.checked && !isTout) allCbs.forEach(x => { if (x.value.toLowerCase() === "tout") x.checked = false; });
+
+          if (cb.checked && isTout) {
+            allCbs.forEach(x => { if (x !== cb) x.checked = false; });
+          } else if (cb.checked && !isTout) {
+            allCbs.forEach(x => { if (x.value.toLowerCase() === "tout") x.checked = false; });
+          }
         });
 
         const span = document.createElement("span");
         span.textContent = optText;
+
         row.appendChild(cb);
         row.appendChild(span);
         wrap.appendChild(row);
@@ -654,13 +621,17 @@ function renderQuestionnaireProjet(list, title) {
     select.className = "projetQuestionSelect";
     select.dataset.question = item.question;
     select.innerHTML = `<option value="">Sélectionner...</option>`;
+
     (item.options || []).forEach(o => {
       const opt = document.createElement("option");
-      opt.value = o; opt.textContent = o;
+      opt.value = o;
+      opt.textContent = o;
       select.appendChild(opt);
     });
+
     const optAutre = document.createElement("option");
-    optAutre.value = "Autre"; optAutre.textContent = "Autre";
+    optAutre.value = "Autre";
+    optAutre.textContent = "Autre";
     select.appendChild(optAutre);
 
     projetQuestions.appendChild(select);
@@ -677,6 +648,7 @@ function refreshPoint4UI() {
     renderQuestionnaireProjet(QUESTIONNAIRE_CONSTRUCTION, "Questionnaire projet — Construction complète");
     return;
   }
+
   if (isProjetRenovation()) {
     titlePoint4.textContent = "4. Projet";
     descPoint4.textContent = "Merci de renseigner les informations relatives à votre projet de rénovation.";
@@ -686,6 +658,7 @@ function refreshPoint4UI() {
     renderQuestionnaireProjet(QUESTIONNAIRE_RENOVATION, "Questionnaire projet — Rénovation");
     return;
   }
+
   titlePoint4.textContent = "4. Corps de métier";
   descPoint4.textContent = "Vous pouvez ajouter plusieurs métiers si nécessaire.";
   projetContainer.style.display = "none";
@@ -694,13 +667,12 @@ function refreshPoint4UI() {
   metiersContainer.style.display = "block";
   addMetierBtn.style.display = "block";
 }
-
 intervention.addEventListener("change", () => { refreshPoint4UI(); majAffichageMainsOeuvre(); });
 refreshPoint4UI();
 
-////////////////////////////////////////////////////////////
-// 9. Multi-métiers
-////////////////////////////////////////////////////////////
+/* =========================
+   Multi-métiers
+========================= */
 function ajouterMetier() {
   compteurMetiers++;
 
@@ -710,6 +682,7 @@ function ajouterMetier() {
 
   block.innerHTML = `
     <h3>Métier #${compteurMetiers}</h3>
+
     <select class="metierSelect" data-id="${compteurMetiers}">
       <option value="">Sélectionner...</option>
       ${Object.keys(data).map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("")}
@@ -722,22 +695,32 @@ function ajouterMetier() {
 
     <div class="moExtras" id="mo_${compteurMetiers}" style="display:none;">
       <h4>${escapeHtml(LIB_MO)} – Informations supplémentaires</h4>
+
       <label>Nombre de techniciens nécessaires</label>
       <input type="number" id="techniciens_${compteurMetiers}" min="1" placeholder="Ex : 3">
+
       <label>Forfait par jour (Main d'œuvre)</label>
       <input type="text" id="forfait_${compteurMetiers}" placeholder="Ex : 50 000 FCFA / jour">
+
       <label>Vous prenez en charge l'hébergement ?</label>
       <select id="hebergement_${compteurMetiers}">
-        <option value="">Sélectionner...</option><option value="Oui">Oui</option><option value="Non">Non</option>
+        <option value="">Sélectionner...</option>
+        <option value="Oui">Oui</option>
+        <option value="Non">Non</option>
       </select>
+
       <label>Date début de prestation</label>
       <input type="date" id="debut_${compteurMetiers}">
+
       <label>Date fin de prestation</label>
       <input type="date" id="fin_${compteurMetiers}">
     </div>
 
-    <button type="button" class="removeMetierBtn" onclick="supprimerMetier(${compteurMetiers})">❌ Supprimer ce métier</button>
+    <button type="button" class="removeMetierBtn" onclick="supprimerMetier(${compteurMetiers})">
+      ❌ Supprimer ce métier
+    </button>
   `;
+
   metiersContainer.appendChild(block);
   majAffichageMainsOeuvre();
 }
@@ -788,9 +771,9 @@ document.addEventListener("change", function(e) {
   });
 });
 
-////////////////////////////////////////////////////////////
-// 10. MO => cacher disponibilités + afficher extras
-////////////////////////////////////////////////////////////
+/* =========================
+   MO : sections 7/8 hide + extras show
+========================= */
 function majAffichageMainsOeuvre() {
   const isMO = (intervention.value === LIB_MO);
   sectionDisponibilites.style.display = isMO ? "none" : "block";
@@ -799,14 +782,13 @@ function majAffichageMainsOeuvre() {
 }
 majAffichageMainsOeuvre();
 
-////////////////////////////////////////////////////////////
-// 11. SUBMIT (fetch robuste + message d'erreur explicite)
-////////////////////////////////////////////////////////////
+/* =========================
+   SUBMIT
+   IMPORTANT: no-cors pour éviter "Failed to fetch" sur WebApp Apps Script
+   => on NE peut pas lire le JSON réponse dans le navigateur.
+========================= */
 async function submitForm() {
-  // validations minimales
   if (!typeClient.value) return alert("Merci de sélectionner le type de client.");
-  if (typeClient.value === "prive" && !telephonePrive.value && !emailPrive.value) return alert("Merci de renseigner au moins un contact (téléphone ou email).");
-  if (typeClient.value === "entreprise" && !telephoneEntreprise.value && !emailEntreprise.value) return alert("Merci de renseigner au moins un contact (téléphone ou email).");
   if (!villeSelect.value) return alert("Merci de sélectionner une ville.");
   if (villeSelect.value === "Autre" && !villeAutre.value.trim()) return alert("Merci de préciser la ville.");
   if (!quartierInput.value.trim()) return alert("Merci de renseigner le quartier.");
@@ -818,7 +800,6 @@ async function submitForm() {
   sendBtn.textContent = "Envoi…";
 
   try {
-    // Photos -> base64
     const photosBase64 = await Promise.all(
       Array.from(photosInput.files || []).map(file =>
         toBase64(file).then(b64 => ({
@@ -829,7 +810,6 @@ async function submitForm() {
       )
     );
 
-    // Métiers
     const metiers = [];
     if (!isProjetBatiment()) {
       document.querySelectorAll(".metierBlock").forEach(block => {
@@ -856,10 +836,10 @@ async function submitForm() {
       });
     }
 
-    // Projet
     let projet = null;
     if (isProjetBatiment()) {
       const projetReponses = {};
+
       document.querySelectorAll(".projetQuestionSelect").forEach(sel => {
         projetReponses[sel.dataset.question] = sel.value || "";
       });
@@ -908,77 +888,25 @@ async function submitForm() {
       photos: photosBase64
     };
 
-    // ---- FETCH robuste: si CORS bloque, tu verras "TypeError: Failed to fetch"
-    // => tu DOIS ajouter CORS côté Apps Script (voir patch plus bas).
-    const response = await fetch(SCRIPT_URL, {
+    await fetch(SCRIPT_URL, {
       method: "POST",
+      mode: "no-cors",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-      redirect: "follow"
+      body: JSON.stringify(payload)
     });
 
-    const text = await response.text();
-    let res;
-    try { res = JSON.parse(text); }
-    catch { throw new Error("Réponse serveur non JSON : " + text); }
-
-    if (!response.ok) throw new Error("HTTP " + response.status + " — " + (res.error || text));
-    if (!res.success) throw new Error(res.error || "Erreur serveur");
-
-    alert("✔️ Envoyé ! Ticket: " + (res.ticket || ""));
+    alert("✔️ Votre demande a été envoyée avec succès !");
+    // Optionnel: reset
+    // document.getElementById("qemForm").reset();
 
   } catch (err) {
     console.error(err);
-    alert("❌ Failed to fetch / CORS ou URL WebApp.\nDétail: " + (err?.message || err));
+    alert("❌ Échec d’envoi : " + (err?.message || err));
   } finally {
     sendBtn.disabled = false;
     sendBtn.textContent = oldText;
   }
 }
 </script>
-
-<!-- =======================================================
-     PATCH APPS SCRIPT (OBLIGATOIRE POUR CORRIGER Failed to fetch)
-     -> Ajoute CORS dans doGet/doPost/doOptions
-     -> Puis REDÉPLOIE la Web App (nouvelle version)
-===========================================================
-Dans ton Apps Script, remplace les retours par cette fonction helper:
-
-function corsJson(obj, statusCode){
-  const out = ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-  // Apps Script n'a pas setStatusCode, mais on peut renvoyer du JSON quand même.
-  return out
-    .setHeader("Access-Control-Allow-Origin", "*")
-    .setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
-    .setHeader("Access-Control-Allow-Headers", "Content-Type");
-}
-
-function doOptions(e){
-  return ContentService.createTextOutput("")
-    .setMimeType(ContentService.MimeType.TEXT)
-    .setHeader("Access-Control-Allow-Origin", "*")
-    .setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS")
-    .setHeader("Access-Control-Allow-Headers", "Content-Type");
-}
-
-Puis dans doGet / doPost:
-
-function doGet(e){
-  return corsJson({success:true,message:"OK"});
-}
-
-Et à la fin de doPost (success):
-  return corsJson(result);
-
-Et dans le catch de doPost:
-  return corsJson({success:false,error:String(err)});
-
-IMPORTANT:
-1) Déployer > Gérer les déploiements > Nouvelle version
-2) Accès: "Tout le monde" (ou "Tout le monde avec le lien")
-3) Exécuter en tant que: "Moi"
-4) Utiliser la NOUVELLE URL /exec (celle du déploiement actif)
-======================================================= -->
 </body>
 </html>
