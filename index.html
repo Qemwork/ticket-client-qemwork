@@ -910,7 +910,16 @@ async function postToAppsScript_(payload, timeoutMs = 25000) {
     clearTimeout(t);
   }
 }
-
+function getDeviceId_() {
+  const KEY = "yafe_device_id";
+  let id = localStorage.getItem(KEY);
+  if (!id) {
+    // simple + unique
+    id = (crypto?.randomUUID?.() || ("dev_" + Date.now() + "_" + Math.random().toString(16).slice(2)));
+    localStorage.setItem(KEY, id);
+  }
+  return id;
+}
 /************************************************************
  * SUBMIT
  ************************************************************/
@@ -971,7 +980,8 @@ async function submitForm() {
       email,
 
       telephonePrive: typeClient.value === "prive" ? telephone : null,
-      emailPrive: typeClient.value === "prive" ? email : null,
+      emailPrive: typeClient.value === "prive" ? email : null, 
+      deviceId: getDeviceId_(),
 
       nomEntreprise: typeClient.value === "entreprise" ? nomEntrepriseEl.value : null,
       nui: typeClient.value === "entreprise" ? nuiEl.value : null,
@@ -1034,4 +1044,5 @@ updateSubmitButtonLabel_();
 </script>
 </body>
 </html>
+
 
