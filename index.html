@@ -32,7 +32,6 @@
   .removeMetierBtn { background:#dc3545; padding:8px; font-size:14px; margin-top:-5px; margin-bottom:10px; }
   .metierBlock { border:1px solid #ddd; background:#fafafa; padding:15px; border-radius:10px; margin-bottom:20px; }
 
-  /* AUTOCOMPLETE */
   .autocomplete-container { position: relative; width: 100%; }
   .autocomplete-results {
     position: absolute; top: 100%; left: 0; right: 0;
@@ -98,16 +97,16 @@
     <div id="clientPrive" style="display:none;">
       <input id="nomPrive" placeholder="Nom du client *">
       <input id="telephonePrive" placeholder="Téléphone *">
-      <input id="emailPrive" placeholder="E-mail *" type="email">
+      <input id="emailPrive" placeholder="E-mail" type="email">
     </div>
 
     <div id="clientEntreprise" style="display:none;">
       <input id="nomEntreprise" placeholder="Nom de l'entreprise *">
-      <input id="nui" placeholder="Numéro de NUI *">
-      <input id="rccm" placeholder="Numéro de RCCM *">
-      <input id="siege" placeholder="Adresse du siège social *">
+      <input id="nui" placeholder="Numéro de NUI">
+      <input id="rccm" placeholder="Numéro de RCCM">
+      <input id="siege" placeholder="Adresse du siège social">
       <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise *">
-      <input id="emailEntreprise" placeholder="E-mail professionnel *" type="email">
+      <input id="emailEntreprise" placeholder="E-mail professionnel" type="email">
     </div>
 
     <h2>2. Coordonnées du chantier</h2>
@@ -127,7 +126,7 @@
       <div id="quartierResults" class="autocomplete-results" style="display:none;"></div>
     </div>
 
-    <input id="lieudit" placeholder="Lieu dit">
+    <input id="lieudit" placeholder="Lieu dit (optionnel)">
 
     <h2>3. Type d’intervention</h2>
     <p class="section-desc">Sélectionnez la nature de votre demande.</p>
@@ -151,7 +150,7 @@
     <p class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
 
     <div id="metiersContainer"></div>
-    <button type="button" class="addMetierBtn" onclick="ajouterMetier()">Ajouter un corps de métier</button>
+    <button type="button" class="addMetierBtn" id="btnAddMetier">Ajouter un corps de métier</button>
 
     <h2>5. Informations complémentaires</h2>
     <p class="section-desc">Merci de fournir toute information supplémentaire susceptible de nous aider.</p>
@@ -180,7 +179,7 @@
       <input type="date" id="dateSouhaitee">
     </div>
 
-    <button type="button" id="submitBtn" onclick="submitForm()">Envoyer la demande</button>
+    <button type="button" id="submitBtn">Envoyer la demande</button>
   </form>
 </div>
 
@@ -193,49 +192,26 @@ const MAX_PHOTOS = 2;
 let isSending = false;
 
 /************************************************************
- * QUESTIONNAIRES PROJET (avec LISTE LOTS Construction + Rénovation)
+ * QUESTIONNAIRES PROJET (COMPLETS)
  ************************************************************/
 const QUESTIONNAIRE_CONSTRUCTION = [
   { section:"PC. Nature du projet", question:"Type de projet ?", options:["Construction neuve","Extension / Surélévation","Projet clé en main"] },
   { section:"PC. Nature du projet", question:"Bâtiment concerné ?", options:["Maison individuelle","Immeuble d’habitation","Bâtiment commercial","Bureaux","Entrepôt / atelier"] },
   { section:"PC. Dimensions", question:"Surface totale approximative ?", options:["<50 m²","50–100 m²","100–200 m²","200–500 m²","500+ m²"] },
   { section:"PC. Dimensions", question:"Nombre de niveaux ?", options:["RDC seul","R+1","R+2","R+3 et +"] },
-
   {
     section: "PC. Lots",
     question: "Lots à construire ? (choix multiple)",
     type: "checkboxes",
     options: [
-      "Études / conception",
-      "Terrassement",
-      "VRD / Raccordements",
-      "Fondations",
-      "Gros œuvre / Maçonnerie",
-      "Charpente",
-      "Toiture / Couverture",
-      "Zinguerie",
-      "Étanchéité",
-      "Façade / Enduit",
-      "Isolation",
-      "Menuiseries extérieures (portes/fenêtres)",
-      "Menuiseries intérieures",
-      "Plâtrerie / Cloisons / Faux plafond",
-      "Électricité",
-      "Plomberie / Sanitaires",
-      "Chauffage",
-      "Climatisation / Ventilation (VMC)",
-      "Peinture",
-      "Revêtements murs (faïence, etc.)",
-      "Revêtements sols (carrelage/parquet)",
-      "Cuisine",
-      "Salle de bain",
-      "Escalier / Garde-corps",
-      "Aménagements extérieurs (clôture, portail, terrasse)",
-      "Nettoyage fin de chantier",
-      "Tout"
+      "Études / conception","Terrassement","VRD / Raccordements","Fondations","Gros œuvre / Maçonnerie","Charpente",
+      "Toiture / Couverture","Zinguerie","Étanchéité","Façade / Enduit","Isolation","Menuiseries extérieures (portes/fenêtres)",
+      "Menuiseries intérieures","Plâtrerie / Cloisons / Faux plafond","Électricité","Plomberie / Sanitaires","Chauffage",
+      "Climatisation / Ventilation (VMC)","Peinture","Revêtements murs (faïence, etc.)","Revêtements sols (carrelage/parquet)",
+      "Cuisine","Salle de bain","Escalier / Garde-corps","Aménagements extérieurs (clôture, portail, terrasse)",
+      "Nettoyage fin de chantier","Tout"
     ]
   },
-
   { section:"PC. Terrain", question:"Terrain disponible ?", options:["Oui","Non","En cours d’acquisition"] },
   { section:"PC. Terrain", question:"Étude de sol ?", options:["Oui – disponible","Non","À faire"] },
   { section:"PC. Plans", question:"Plans disponibles ?", options:["Oui – architecte","Oui – croquis","Non"] },
@@ -273,7 +249,7 @@ const QUESTIONNAIRE_RENOVATION = [
 ];
 
 /************************************************************
- * BASE DE DONNÉES MÉTIERS
+ * BASE DE DONNÉES MÉTIERS (COMPLET)
  ************************************************************/
 const data = {
   Carreleur_Solier: [
@@ -408,7 +384,7 @@ const data = {
 };
 
 /************************************************************
- * QUARTIERS
+ * QUARTIERS (COMPLETS)
  ************************************************************/
 const quartiersYaounde = [
   'Akono','Angangueo','Anguissa','Bastos','Biteng','Biyem-Assi','Briqueterie',
@@ -439,14 +415,14 @@ const quartiersDouala = [
   'Dibom','Dikahe','Djébalè','Emene City','Epaka I','Epaka II','Gentil','Grand Moulin',
   'Hydrocarbures','Japoma','Jourdain','Kassalafam','Kombo Bouma','Kombo Moukoko',
   'Kondi','Koo','Kotto','Koumassi','Lagos Market','Lendi','Logbaba','Logbessou','Logpom',
-  'Lycée de New Bell','Madiba','Makepe','Malangue','Mambanda','Manike','Manoka','Massadi',
+  "Lycée de New Bell",'Madiba','Makepe','Malangue','Mambanda','Manike','Manoka','Massadi',
   'Matanda','Mbam Ewondo','Mbanga Bakoko','Mbengue City','Mbénadikoumé','Moungangué',
   'Moukala Tanda','Ndogbati','Ndogbong','Ndoghem','Ndoghem II','Ndogmbe','Ndogpassi',
   'Ndogsimbi','Ndobo','Ndokoti','Ndjong-Mebi','Ngangue','Ngodi','Ngoma','Ngwelé',
   'Nguereck','Nguibassal','Nkomba','Nkongmondo','Nkongui','Nkololoun','NKondi',
-  'Nouvelle zone d\'Akwa Nord','Nouvelle zone de New-Deido','Number One Creek',
+  "Nouvelle zone d'Akwa Nord",'Nouvelle zone de New-Deido','Number One Creek',
   'Nyalla','Nyangadou','Nylon','Oyack','Petit Toubé','Pk 7','Pk 9','Pk 10','Pk 11',
-  'Pk 17','Pk 21','Plateau Joss','Pom Lien','Prison centrale de New Bell','Sabenjongo',
+  'Pk 17','Pk 21','Plateau Joss','Pom Lien',"Prison centrale de New Bell",'Sabenjongo',
   'Sincatex','So-Boum','Sodiko','Sodikombo','Sobikago','Song-Mahop','Song-Ngongag',
   'Sopom','Source','T.S.F','Tergal','Village','Youpwé'
 ];
@@ -489,6 +465,7 @@ const photosInput = document.getElementById("photos");
 const photoPreview = document.getElementById("photoPreview");
 
 const submitBtn = document.getElementById("submitBtn");
+const btnAddMetier = document.getElementById("btnAddMetier");
 
 // Projet
 const sectionProjet = document.getElementById("sectionProjet");
@@ -564,7 +541,7 @@ document.addEventListener('click', e => {
 });
 
 /************************************************************
- * PHOTOS: limite 2 + preview
+ * PHOTOS (preview + limite)
  ************************************************************/
 photosInput.addEventListener("change", () => {
   const files = Array.from(photosInput.files).slice(0, MAX_PHOTOS);
@@ -646,7 +623,6 @@ function renderQuestionnaireProjet_(items, prefix) {
 
             projetReponses[item.question] = selected;
           }
-
           updateSubmitButtonLabel_();
         });
 
@@ -829,7 +805,7 @@ function majAffichageMainOeuvre_() {
 }
 
 /************************************************************
- * COMPLETUDE (lead vs demande complète)
+ * COMPLETUDE (lead vs demande complète) - lieudit NON obligatoire
  ************************************************************/
 function buildPayloadLight_() {
   return {
@@ -850,8 +826,7 @@ function isInterventionCompleteFront_(p) {
   const hasChantierEtType =
     String(p.ville || "").trim() &&
     String(p.quartier || "").trim() &&
-    String(p.lieudit || "").trim() &&
-    String(p.intervention || "").trim();
+    String(p.intervention || "").trim(); // lieudit retiré
 
   const hasMetier = Array.isArray(p.metiers) && p.metiers.some(m => String(m?.metier || "").trim());
   const hasProjet = !!(p.projet && String(p.projet.type || "").trim());
@@ -863,22 +838,6 @@ function updateSubmitButtonLabel_() {
   const complete = isInterventionCompleteFront_(buildPayloadLight_());
   submitBtn.textContent = complete ? "Envoyer la demande" : "Enregistrer mes coordonnées";
 }
-
-/************************************************************
- * ÉVÉNEMENTS
- ************************************************************/
-["input","change"].forEach(evt => {
-  villeSelect.addEventListener(evt, updateSubmitButtonLabel_);
-  villeAutre.addEventListener(evt, updateSubmitButtonLabel_);
-  quartierInput.addEventListener(evt, updateSubmitButtonLabel_);
-  lieudit.addEventListener(evt, updateSubmitButtonLabel_);
-});
-
-intervention.addEventListener("change", () => {
-  majAffichageMainOeuvre_();
-  majAffichageProjet_();
-  updateSubmitButtonLabel_();
-});
 
 /************************************************************
  * Fetch robuste (urlencoded payload=...) + timeout + JSON safe
@@ -910,8 +869,9 @@ async function postToAppsScript_(payload, timeoutMs = 25000) {
     clearTimeout(t);
   }
 }
+
 function getDeviceId_() {
-  const KEY = "yafe_device_id";
+  const KEY = "qemwork_device_id";
   let id = localStorage.getItem(KEY);
   if (!id) {
     id = (crypto?.randomUUID?.() || ("dev_" + Date.now() + "_" + Math.random().toString(16).slice(2)));
@@ -919,6 +879,7 @@ function getDeviceId_() {
   }
   return id;
 }
+
 /************************************************************
  * SUBMIT
  ************************************************************/
@@ -934,6 +895,7 @@ async function submitForm() {
     const telephone = (typeClient.value === "prive") ? telephonePrive.value : telephoneEntrepriseEl.value;
     const email = (typeClient.value === "prive") ? emailPrive.value : emailEntrepriseEl.value;
 
+    if (!String(nom || "").trim()) throw new Error("Veuillez renseigner le nom.");
     if (!String(telephone || "").trim()) throw new Error("Veuillez renseigner le téléphone.");
 
     const files = Array.from(photosInput.files).slice(0, MAX_PHOTOS);
@@ -980,7 +942,7 @@ async function submitForm() {
       email,
 
       telephonePrive: typeClient.value === "prive" ? telephone : null,
-      emailPrive: typeClient.value === "prive" ? email : null, 
+      emailPrive: typeClient.value === "prive" ? email : null,
 
       nomEntreprise: typeClient.value === "entreprise" ? nomEntrepriseEl.value : null,
       nui: typeClient.value === "entreprise" ? nuiEl.value : null,
@@ -1010,11 +972,11 @@ async function submitForm() {
       photos: photosBase64
     };
 
-    await postToAppsScript_(payload);
-    alert("Enregistré avec succès !");
+    const out = await postToAppsScript_(payload);
+    alert(out.mode === "intervention" ? "Demande envoyée !" : "Coordonnées enregistrées !");
   } catch (err) {
     alert("Erreur: " + (err?.message || err));
-    console.log(err);
+    console.error(err);
   } finally {
     isSending = false;
     submitBtn.disabled = false;
@@ -1035,23 +997,29 @@ function toBase64(file) {
 }
 
 /************************************************************
- * INIT
+ * INIT (après DOM)
  ************************************************************/
-majAffichageMainOeuvre_();
-majAffichageProjet_();
-updateSubmitButtonLabel_();
+document.addEventListener("DOMContentLoaded", () => {
+  btnAddMetier.addEventListener("click", ajouterMetier);
+  submitBtn.addEventListener("click", submitForm);
+
+  ["input","change"].forEach(evt => {
+    villeSelect.addEventListener(evt, updateSubmitButtonLabel_);
+    villeAutre.addEventListener(evt, updateSubmitButtonLabel_);
+    quartierInput.addEventListener(evt, updateSubmitButtonLabel_);
+    lieudit.addEventListener(evt, updateSubmitButtonLabel_);
+  });
+
+  intervention.addEventListener("change", () => {
+    majAffichageMainOeuvre_();
+    majAffichageProjet_();
+    updateSubmitButtonLabel_();
+  });
+
+  majAffichageMainOeuvre_();
+  majAffichageProjet_();
+  updateSubmitButtonLabel_();
+});
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
