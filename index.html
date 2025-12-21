@@ -7,24 +7,12 @@
 
   <style>
     body { font-family: Arial, sans-serif; background:#f4f6f9; padding:20px; margin:0; }
-    .container {
-      max-width:900px; margin:auto; background:white;
-      padding:25px; border-radius:12px;
-      box-shadow:0 3px 10px rgba(0,0,0,0.1);
-    }
+    .container { max-width:900px; margin:auto; background:white; padding:25px; border-radius:12px; box-shadow:0 3px 10px rgba(0,0,0,0.1); }
     h1, h2, h3, h4 { color:#1a1a1a; margin-bottom:6px; }
     .section-desc { color:#555; font-size:14px; margin:-6px 0 15px; }
-    input, select, textarea {
-      width:100%; padding:10px;
-      margin-top:6px; margin-bottom:15px;
-      border:1px solid #ccc; border-radius:8px; background:#fafafa;
-    }
+    input, select, textarea { width:100%; padding:10px; margin-top:6px; margin-bottom:15px; border:1px solid #ccc; border-radius:8px; background:#fafafa; box-sizing:border-box; }
     textarea { min-height:120px; }
-    button {
-      width:100%; padding:15px; background:#25D366;
-      border:none; border-radius:10px; font-size:18px;
-      color:white; font-weight:bold; cursor:pointer;
-    }
+    button { width:100%; padding:15px; background:#25D366; border:none; border-radius:10px; font-size:18px; color:white; font-weight:bold; cursor:pointer; }
     button:hover { background:#1ebe5d; }
     button:disabled { background:#9adfb6; cursor:not-allowed; }
 
@@ -33,226 +21,158 @@
     .metierBlock { border:1px solid #ddd; background:#fafafa; padding:15px; border-radius:10px; margin-bottom:20px; }
 
     .autocomplete-container { position: relative; width: 100%; }
-    .autocomplete-results {
-      position: absolute; top: 100%; left: 0; right: 0;
-      background: white; border: 1px solid #ccc; border-radius: 8px;
-      max-height: 180px; overflow-y: auto; z-index: 50;
-    }
+    .autocomplete-results { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccc; border-radius: 8px; max-height: 180px; overflow-y: auto; z-index: 50; }
     .autocomplete-item { padding: 10px; cursor: pointer; }
     .autocomplete-item:hover { background: #f0f0f0; }
 
-    #photoPreview img {
-      width:100px; height:100px;
-      object-fit:cover; border-radius:8px;
-      border:1px solid #ddd;
-    }
+    #photoPreview { display:flex; gap:10px; flex-wrap:wrap; }
+    #photoPreview img { width:100px; height:100px; object-fit:cover; border-radius:8px; border:1px solid #ddd; }
 
-    .moExtras {
-      margin-top:10px; padding:10px;
-      border-radius:8px;
-      background:#eef8ff;
-      border:1px dashed #79a9ff;
-    }
+    .moExtras { margin-top:10px; padding:10px; border-radius:8px; background:#eef8ff; border:1px dashed #79a9ff; }
+    .notice { background:#fff6e5; border:1px solid #ffd59a; padding:10px; border-radius:10px; margin:10px 0 15px; color:#5a3b00; font-size:13px; }
 
-    .notice {
-      background:#fff6e5;
-      border:1px solid #ffd59a;
-      padding:10px;
-      border-radius:10px;
-      margin:10px 0 15px;
-      color:#5a3b00;
-      font-size:13px;
-    }
-
-    .checkbox-grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap:8px;
-      margin: 8px 0 15px;
-    }
+    .checkbox-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:8px; margin: 8px 0 15px; }
     .cb-row{ display:flex; align-items:center; gap:8px; }
     .cb-row label{ margin:0; }
+
+    .muted{color:#666;font-size:13px}
   </style>
 </head>
 
 <body>
   <div class="container">
     <div style="text-align:center;">
-      <img src="https://www.qemwork.com/icons/logo-qemwork-new.png" style="max-width:220px;">
+      <img src="https://www.qemwork.com/icons/logo-qemwork-new.png" style="max-width:220px;" alt="QemWork">
     </div>
 
     <h1>Bienvenue chez QemWork !</h1>
-    <p>Ce formulaire nous permet de recueillir toutes les informations nécessaires afin de vous envoyer un devis estimatif, un technicien adapté et de suivre votre dossier.</p>
+    <p class="muted">Envoi via POST (form) vers Apps Script, sans fetch.</p>
 
-    <!-- IMPORTANT: action + target + payload hidden (no fetch) -->
-    
-  <form>
-  <h2>1. Coordonnées du client</h2>
+    <form id="qemForm"
+          method="POST"
+          action="https://script.google.com/macros/s/AKfycbwWIc-45L2h8uJEyGgCaDajYm6qVjnFkmQLXr_ioAHe2nqDxFULlYtTwroBC3SnBNaH/exec"
+          target="hidden_iframe">
+      <input type="hidden" id="payloadField" name="payload" value="">
 
-  <select id="typeClient" required>
-    <option value="">Êtes-vous un client privé ou une entreprise ?</option>
-    <option value="prive">Client privé</option>
-    <option value="entreprise">Entreprise</option>
-  </select>
+      <h2>1. Coordonnées du client</h2>
 
-  <div id="clientPrive" style="display:none;">
-    <input id="nomPrive" placeholder="Nom du client *">
-    <input id="telephonePrive" placeholder="Téléphone *">
-    <input id="emailPrive" placeholder="E-mail" type="email">
-  </div>
+      <select id="typeClient" required>
+        <option value="">Êtes-vous un client privé ou une entreprise ?</option>
+        <option value="prive">Client privé</option>
+        <option value="entreprise">Entreprise</option>
+      </select>
 
-  <div id="clientEntreprise" style="display:none;">
-    <input id="nomEntreprise" placeholder="Nom de l'entreprise *">
-    <input id="nui" placeholder="Numéro de NUI">
-    <input id="rccm" placeholder="Numéro de RCCM">
-    <input id="siege" placeholder="Adresse du siège social">
-    <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise *">
-    <input id="emailEntreprise" placeholder="E-mail professionnel" type="email">
-  </div>
+      <div id="clientPrive" style="display:none;">
+        <input id="nomPrive" placeholder="Nom du client *">
+        <input id="telephonePrive" placeholder="Téléphone *">
+        <input id="emailPrive" placeholder="E-mail" type="email">
+      </div>
 
-  <h2>2. Coordonnées du chantier</h2>
-  <p class="section-desc">Indiquez où se situe exactement le chantier.</p>
+      <div id="clientEntreprise" style="display:none;">
+        <input id="nomEntreprise" placeholder="Nom de l'entreprise *">
+        <input id="nui" placeholder="Numéro de NUI">
+        <input id="rccm" placeholder="Numéro de RCCM">
+        <input id="siege" placeholder="Adresse du siège social">
+        <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise *">
+        <input id="emailEntreprise" placeholder="E-mail professionnel" type="email">
+      </div>
 
-  <select id="ville">
-    <option value="">Sélectionner la ville...</option>
-    <option value="Yaoundé">Yaoundé</option>
-    <option value="Douala">Douala</option>
-    <option value="Autre">Autre</option>
-  </select>
+      <h2>2. Coordonnées du chantier</h2>
+      <p class="section-desc">Indiquez où se situe exactement le chantier.</p>
 
-  <input id="villeAutre" placeholder="Précisez la ville" style="display:none;">
+      <select id="ville">
+        <option value="">Sélectionner la ville...</option>
+        <option value="Yaoundé">Yaoundé</option>
+        <option value="Douala">Douala</option>
+        <option value="Autre">Autre</option>
+      </select>
 
-  <div class="autocomplete-container">
-    <input id="quartier" placeholder="Quartier" autocomplete="off">
-    <div id="quartierResults" class="autocomplete-results" style="display:none;"></div>
-  </div>
+      <input id="villeAutre" placeholder="Précisez la ville" style="display:none;">
 
-  <input id="lieudit" placeholder="Lieu dit (optionnel)">
+      <div class="autocomplete-container">
+        <input id="quartier" placeholder="Quartier" autocomplete="off">
+        <div id="quartierResults" class="autocomplete-results" style="display:none;"></div>
+      </div>
 
-  <h2>3. Type d’intervention</h2>
-  <p class="section-desc">Sélectionnez la nature de votre demande.</p>
+      <input id="lieudit" placeholder="Lieu dit (optionnel)">
 
-  <select id="intervention">
-    <option value="">Sélectionner...</option>
-    <option>Mission urgence</option>
-    <option>Mission classique</option>
-    <option>Demande de main d'œuvre</option>
-    <option>Projet de construction complète</option>
-    <option>Projet de rénovation</option>
-  </select>
+      <h2>3. Type d’intervention</h2>
+      <p class="section-desc">Sélectionnez la nature de votre demande.</p>
 
-  <div id="sectionProjet" style="display:none;">
-    <h2>3B. Questionnaire projet</h2>
-    <p class="section-desc">Merci de compléter ces informations pour permettre une première estimation.</p>
-    <div id="projetContainer"></div>
-  </div>
+      <select id="intervention">
+        <option value="">Sélectionner...</option>
+        <option>Mission urgence</option>
+        <option>Mission classique</option>
+        <option>Demande de main d'œuvre</option>
+        <option>Projet de construction complète</option>
+        <option>Projet de rénovation</option>
+      </select>
 
-  <h2>4. Corps de métier</h2>
-  <p class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
+      <div id="sectionProjet" style="display:none;">
+        <h2>3B. Questionnaire projet</h2>
+        <p class="section-desc">Merci de compléter ces informations pour permettre une première estimation.</p>
+        <div id="projetContainer"></div>
+      </div>
 
-  <div id="metiersContainer"></div>
-  <button type="button" class="addMetierBtn" id="btnAddMetier">Ajouter un corps de métier</button>
+      <h2>4. Corps de métier</h2>
+      <p class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
 
-  <h2>5. Informations complémentaires</h2>
-  <p class="section-desc">Merci de fournir toute information supplémentaire susceptible de nous aider.</p>
-  <textarea id="description" placeholder="Renseignez vos informations ici..."></textarea>
+      <div id="metiersContainer"></div>
+      <button type="button" class="addMetierBtn" id="btnAddMetier">Ajouter un corps de métier</button>
 
-  <h2>6. Photos du chantier (optionnel)</h2>
-  <p class="section-desc">Ajoutez quelques photos pour aider le technicien à mieux comprendre la situation.</p>
+      <h2>5. Informations complémentaires</h2>
+      <textarea id="description" placeholder="Renseignez vos informations ici..."></textarea>
 
-  <div class="notice">
-    Limites : <b>2 photos max</b> par envoi (pour éviter les quotas Google).
-    Si vous en choisissez plus, seules les 2 premières seront envoyées.
-  </div>
+      <h2>6. Photos du chantier (optionnel)</h2>
+      <div class="notice">
+        Limites : <b>2 photos max</b> par envoi. Si vous en choisissez plus, seules les 2 premières seront envoyées.
+      </div>
 
-  <input type="file" id="photos" accept="image/*" multiple>
-  <div id="photoPreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+      <input type="file" id="photos" accept="image/*" multiple>
+      <div id="photoPreview"></div>
 
-  <div id="sectionDisponibilites">
-    <h2>7. Disponibilités</h2>
-    <p class="section-desc">Veuillez indiquer jusqu’à trois créneaux pour une visite sur place.</p>
-    <input type="datetime-local" id="c1">
-    <input type="datetime-local" id="c2">
-    <input type="datetime-local" id="c3">
-  </div>
+      <div id="sectionDisponibilites">
+        <h2>7. Disponibilités</h2>
+        <input type="datetime-local" id="c1">
+        <input type="datetime-local" id="c2">
+        <input type="datetime-local" id="c3">
+      </div>
 
-  <div id="sectionDateSouhaitee">
-    <h2>8. Date souhaitée pour l’intervention</h2>
-    <input type="date" id="dateSouhaitee">
-  </div>
+      <div id="sectionDateSouhaitee">
+        <h2>8. Date souhaitée pour l’intervention</h2>
+        <input type="date" id="dateSouhaitee">
+      </div>
 
-  <button type="button" id="submitBtn">Envoyer la demande</button>
-</form>
+      <button type="button" id="submitBtn">Envoyer la demande</button>
+      <div id="status" class="muted" style="margin-top:10px;"></div>
+    </form>
+
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
   </div>
 
 <script>
 /************************************************************
  * CONFIG
  ************************************************************/
-// Appel serveur "pur" (sans blocage UI) + anti-double-clic
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXD7MB0AV-mJDHBPnuBwWbUczV8YUiGhMbAwEnhDB5kEvcDwsDMcuFkWFGnrW5JAvd/exec";
-
-let _inFlight = false;
-
-async function sendToServer(payload) {
-  if (_inFlight) return;          // évite doublons
-  _inFlight = true;
-
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body: "payload=" + encodeURIComponent(JSON.stringify(payload))
-    });
-
-    const text = await res.text();
-    let json;
-    try { json = JSON.parse(text); }
-    catch { throw new Error("Réponse serveur invalide: " + text.slice(0, 200)); }
-
-    if (!res.ok || json.success === false) throw new Error(json.error || `HTTP ${res.status}`);
-    return json;
-  } finally {
-    _inFlight = false;
-  }
-}
-  
-  
- document.getElementById("submitBtn")?.addEventListener("click", async () => {
-  const payload = buildPayloadSomehow(); // <-- remplace par ta fonction
-  try {
-    const out = await sendToServer(payload);
-    console.log("OK", out);
-  } catch (e) {
-    console.error("ERREUR", e.message || e);
-  }
-}); 
-  
-  
 const MAX_PHOTOS = 2;
-let isSending = false;
+const INTERVENTION_MO = "Demande de main d'œuvre";
 
 /************************************************************
- * QUESTIONNAIRES PROJET (COMPLETS)
+ * QUESTIONNAIRES PROJET (TES LISTES)
  ************************************************************/
 const QUESTIONNAIRE_CONSTRUCTION = [
   { section:"PC. Nature du projet", question:"Type de projet ?", options:["Construction neuve","Extension / Surélévation","Projet clé en main"] },
   { section:"PC. Nature du projet", question:"Bâtiment concerné ?", options:["Maison individuelle","Immeuble d’habitation","Bâtiment commercial","Bureaux","Entrepôt / atelier"] },
   { section:"PC. Dimensions", question:"Surface totale approximative ?", options:["<50 m²","50–100 m²","100–200 m²","200–500 m²","500+ m²"] },
   { section:"PC. Dimensions", question:"Nombre de niveaux ?", options:["RDC seul","R+1","R+2","R+3 et +"] },
-  {
-    section: "PC. Lots",
-    question: "Lots à construire ? (choix multiple)",
-    type: "checkboxes",
-    options: [
-      "Études / conception","Terrassement","VRD / Raccordements","Fondations","Gros œuvre / Maçonnerie","Charpente",
-      "Toiture / Couverture","Zinguerie","Étanchéité","Façade / Enduit","Isolation","Menuiseries extérieures (portes/fenêtres)",
-      "Menuiseries intérieures","Plâtrerie / Cloisons / Faux plafond","Électricité","Plomberie / Sanitaires","Chauffage",
-      "Climatisation / Ventilation (VMC)","Peinture","Revêtements murs (faïence, etc.)","Revêtements sols (carrelage/parquet)",
-      "Cuisine","Salle de bain","Escalier / Garde-corps","Aménagements extérieurs (clôture, portail, terrasse)",
-      "Nettoyage fin de chantier","Tout"
-    ]
-  },
+  { section:"PC. Lots", question:"Lots à construire ? (choix multiple)", type:"checkboxes", options:[
+    "Études / conception","Terrassement","VRD / Raccordements","Fondations","Gros œuvre / Maçonnerie","Charpente",
+    "Toiture / Couverture","Zinguerie","Étanchéité","Façade / Enduit","Isolation","Menuiseries extérieures (portes/fenêtres)",
+    "Menuiseries intérieures","Plâtrerie / Cloisons / Faux plafond","Électricité","Plomberie / Sanitaires","Chauffage",
+    "Climatisation / Ventilation (VMC)","Peinture","Revêtements murs (faïence, etc.)","Revêtements sols (carrelage/parquet)",
+    "Cuisine","Salle de bain","Escalier / Garde-corps","Aménagements extérieurs (clôture, portail, terrasse)",
+    "Nettoyage fin de chantier","Tout"
+  ]},
   { section:"PC. Terrain", question:"Terrain disponible ?", options:["Oui","Non","En cours d’acquisition"] },
   { section:"PC. Terrain", question:"Étude de sol ?", options:["Oui – disponible","Non","À faire"] },
   { section:"PC. Plans", question:"Plans disponibles ?", options:["Oui – architecte","Oui – croquis","Non"] },
@@ -273,16 +193,11 @@ const QUESTIONNAIRE_RENOVATION = [
   { section:"PR. Risques", question:"Présence amiante / plomb ?", options:["Oui","Non","Inconnu"] },
   { section:"PR. Occupation", question:"Bâtiment occupé pendant travaux ?", options:["Oui","Non","Partiellement"] },
   { section:"PR. Surfaces", question:"Surface concernée ?", options:["<50 m²","50–100 m²","100–200 m²","200+ m²"] },
-  {
-    section: "PR. Lots",
-    question: "Lots à rénover ? (choix multiple)",
-    type: "checkboxes",
-    options: [
-      "Gros œuvre","Plomberie","Électricité","Climatisation","Menuiseries","Peinture","Carrelage",
-      "Toiture","Étanchéité","Voirie et Réseaux Divers / Extérieurs","Plâtrerie / Faux plafond",
-      "Serrurerie","Cuisine","Salle de bain","Tout"
-    ]
-  },
+  { section:"PR. Lots", question:"Lots à rénover ? (choix multiple)", type:"checkboxes", options:[
+    "Gros œuvre","Plomberie","Électricité","Climatisation","Menuiseries","Peinture","Carrelage",
+    "Toiture","Étanchéité","Voirie et Réseaux Divers / Extérieurs","Plâtrerie / Faux plafond",
+    "Serrurerie","Cuisine","Salle de bain","Tout"
+  ]},
   { section:"PR. Objectif", question:"Objectif principal ?", options:["Remise à neuf","Modernisation","Mise en conformité","Réparation dégâts (eau/feu)"] },
   { section:"PR. Logistique", question:"Accès chantier ?", options:["Accès camion facile","Accès moyen","Accès difficile"] },
   { section:"PR. Budget / Délais", question:"Budget estimatif ?", options:["<5 M","5–10 M","10–25 M","25–50 M","50 M+","À définir"] },
@@ -290,7 +205,7 @@ const QUESTIONNAIRE_RENOVATION = [
 ];
 
 /************************************************************
- * BASE DE DONNÉES MÉTIERS (COMPLET)
+ * BASE DE DONNÉES MÉTIERS (TES LISTES)
  ************************************************************/
 const data = {
   Carreleur_Solier: [
@@ -426,47 +341,10 @@ const data = {
 
 /************************************************************
  * QUARTIERS
+ * (Si tu veux aussi Douala + Yaoundé en FULL, colle tes listes ici)
  ************************************************************/
-const quartiersYaounde = [
-  'Akono','Angangueo','Anguissa','Bastos','Biteng','Biyem-Assi','Briqueterie',
-  'Camp SIC Hippodrome','Camp-Sonel','Carrière','Cité Verte','Condengui','Damas',
-  'Ebogo','Efog-Ateba','Efoulan','Ekoudou','Ekounou','Emana','Emonbo','Essos',
-  'Etoa-Meki','Etoug-Ebe','Etoudi','Fouda','Jean-Vespa','Kondengui','Koweit City',
-  'Maison Blanche','Mbankolo','Mbimi','Mballa 2','Mehandan','Melen','Mefou','Mendong',
-  'Mfandena','Mimboman','Mini-ferme','Minkama','Mokolo','Mvan','Mvog Ada',
-  'Mvog Atangana Mballa','Mvog-Betsi','Mvog-Mbi','Mvolyé','Ndzana','Ngoa Ekélé',
-  'Ngola','Ngousso','Ngoumou','Nkol-Ewoue','Nkol-Ewouelle','Nkolbisson','Nkoldongo',
-  'Nkolmesseng','Nkolndongo','Nkom Kana','Nkometou','Nkomo','Nlongkak','Nkolbikok',
-  'Nkolzol','Nkolzol II','Nlongkwa','Nlongmeko’o','Nlongmeko','Nlongola','Nyom',
-  'Obili','Obobogo','Odza','Olembé','Olézoa','Oliga','Omnisports','Oyom-Abang',
-  'Plateau Atemengue','Poste Centrale','Santa Barbara','Simbock','Tam-Tam Weekend',
-  'Tongolo','Tsinga','Village Mvog Ada','Yaoundé Centre','Zamakoe','Messa','Eleveur'
-];
-
-const quartiersDouala = [
-  'Aéroport','Akra Kombo','Babylone I','Babylone II','Bali','Bangue','Beedi','Bepanda',
-  'Bessengue','Besseke','Bikoro','Bilongue','Bilingue','Bobongo','Boko','Bomkul',
-  'Bona Bekombo','Bonabeyike','Bonadiwoto','Bonadouma','Bonadoumbé','Bonadibong',
-  'Bonagang','Bonajang','Bonajinje','Bonakouamouang','Bonakeke Akwa','Bonalembe',
-  'Bonamatoumbe','Bonambappe','Bonaminkano','Bonamoussadi','Bonamoudourou',
-  'Bonamouti','Bonamouti Akwa 2','Bonanjo','Bonanloka','Bonangando','Bonapriso',
-  'Bonassama','Bonateki','Bonatene','Bonelang','Bonoleke','Bonoumbé','Bonutongo',
-  'Brazzaville','Bu','Bwapé','Cacao-Barry','Cap Cameroun','C.C.C.','Cité Berge',
-  'Cité de la Paix','Cité des palmiers','Cité Sic','Congo','Dahomey','Deïdo',
-  'Dibom','Dikahe','Djébalè','Emene City','Epaka I','Epaka II','Gentil','Grand Moulin',
-  'Hydrocarbures','Japoma','Jourdain','Kassalafam','Kombo Bouma','Kombo Moukoko',
-  'Kondi','Koo','Kotto','Koumassi','Lagos Market','Lendi','Logbaba','Logbessou','Logpom',
-  "Lycée de New Bell",'Madiba','Makepe','Malangue','Mambanda','Manike','Manoka','Massadi',
-  'Matanda','Mbam Ewondo','Mbanga Bakoko','Mbengue City','Mbénadikoumé','Moungangué',
-  'Moukala Tanda','Ndogbati','Ndogbong','Ndoghem','Ndoghem II','Ndogmbe','Ndogpassi',
-  'Ndogsimbi','Ndobo','Ndokoti','Ndjong-Mebi','Ngangue','Ngodi','Ngoma','Ngwelé',
-  'Nguereck','Nguibassal','Nkomba','Nkongmondo','Nkongui','Nkololoun','NKondi',
-  "Nouvelle zone d'Akwa Nord",'Nouvelle zone de New-Deido','Number One Creek',
-  'Nyalla','Nyangadou','Nylon','Oyack','Petit Toubé','Pk 7','Pk 9','Pk 10','Pk 11',
-  'Pk 17','Pk 21','Plateau Joss','Pom Lien',"Prison centrale de New Bell",'Sabenjongo',
-  'Sincatex','So-Boum','Sodiko','Sodikombo','Sobikago','Song-Mahop','Song-Ngongag',
-  'Sopom','Source','T.S.F','Tergal','Village','Youpwé'
-];
+const quartiersYaounde = [];  // <-- colle ta liste
+const quartiersDouala = [];   // <-- colle ta liste
 
 /************************************************************
  * DOM
@@ -508,13 +386,14 @@ const photoPreview = document.getElementById("photoPreview");
 const submitBtn = document.getElementById("submitBtn");
 const btnAddMetier = document.getElementById("btnAddMetier");
 
-// Projet
 const sectionProjet = document.getElementById("sectionProjet");
 const projetContainer = document.getElementById("projetContainer");
 let projetReponses = {};
 
 let quartiersActifs = [];
 let compteurMetiers = 0;
+
+const statusEl = document.getElementById("status");
 
 /************************************************************
  * PRIVÉ / ENTREPRISE
@@ -552,7 +431,7 @@ quartierInput.addEventListener('input', () => {
     return;
   }
 
-  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term));
+  const filtered = quartiersActifs.filter(q => q.toLowerCase().includes(term)).slice(0, 30);
   if (!filtered.length) {
     quartierResults.style.display = 'none';
     updateSubmitButtonLabel_();
@@ -585,9 +464,9 @@ document.addEventListener('click', e => {
  * PHOTOS (preview + limite)
  ************************************************************/
 photosInput.addEventListener("change", () => {
-  const files = Array.from(photosInput.files).slice(0, MAX_PHOTOS);
+  const files = Array.from(photosInput.files || []).slice(0, MAX_PHOTOS);
 
-  if (photosInput.files.length > MAX_PHOTOS) {
+  if ((photosInput.files || []).length > MAX_PHOTOS) {
     alert(`Maximum ${MAX_PHOTOS} photos. Seules les ${MAX_PHOTOS} premières seront envoyées.`);
   }
 
@@ -727,7 +606,7 @@ function majAffichageProjet_() {
 }
 
 /************************************************************
- * MULTI-MÉTIERS + QUESTIONS + champs MO
+ * MULTI-MÉTIERS
  ************************************************************/
 function ajouterMetier() {
   compteurMetiers++;
@@ -750,7 +629,7 @@ function ajouterMetier() {
     <textarea class="descMetier" id="descMetier_${compteurMetiers}" placeholder="Description spécifique du métier"></textarea>
 
     <div class="moExtras" id="mo_${compteurMetiers}" style="display:none;">
-      <h4>Demande de main d'œuvre – Informations supplémentaires</h4>
+      <h4>Demande de main d'œuvre – Infos</h4>
 
       <label>Nombre de techniciens nécessaires</label>
       <input type="number" id="techniciens_${compteurMetiers}" min="1" placeholder="Ex : 3">
@@ -832,10 +711,10 @@ document.addEventListener("change", function(e) {
 });
 
 /************************************************************
- * LOGIQUE : Demande de main d'œuvre
+ * LOGIQUE MO
  ************************************************************/
 function majAffichageMainOeuvre_() {
-  const isMO = (intervention.value === "Demande de main d'œuvre");
+  const isMO = (intervention.value === INTERVENTION_MO);
 
   sectionDisponibilites.style.display = isMO ? "none" : "block";
   sectionDateSouhaitee.style.display = isMO ? "none" : "block";
@@ -846,13 +725,12 @@ function majAffichageMainOeuvre_() {
 }
 
 /************************************************************
- * COMPLETUDE (lead vs demande complète) - lieudit NON obligatoire
+ * COMPLETUDE (front)
  ************************************************************/
 function buildPayloadLight_() {
   return {
     ville: (villeSelect.value === "Autre") ? villeAutre.value : villeSelect.value,
     quartier: quartierInput.value,
-    lieudit: lieudit.value,
     intervention: intervention.value,
     metiers: Array.from(document.querySelectorAll(".metierBlock")).map(block => ({
       metier: block.querySelector(".metierSelect")?.value || ""
@@ -880,6 +758,9 @@ function updateSubmitButtonLabel_() {
   submitBtn.textContent = complete ? "Envoyer la demande" : "Enregistrer mes coordonnées";
 }
 
+/************************************************************
+ * DEVICE ID
+ ************************************************************/
 function getDeviceId_() {
   const KEY = "qemwork_device_id";
   let id = localStorage.getItem(KEY);
@@ -891,12 +772,24 @@ function getDeviceId_() {
 }
 
 /************************************************************
- * SUBMIT SANS FETCH (POST iframe)
+ * SUBMIT (POST iframe)
  ************************************************************/
-async function submitForm() {
+let isSending = false;
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Impossible de lire le fichier."));
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+async function submitForm_() {
   if (isSending) return;
   isSending = true;
   submitBtn.disabled = true;
+  statusEl.textContent = "Envoi en cours...";
 
   try {
     if (!typeClient.value) throw new Error("Veuillez sélectionner le type de client.");
@@ -908,24 +801,24 @@ async function submitForm() {
     if (!String(nom || "").trim()) throw new Error("Veuillez renseigner le nom.");
     if (!String(telephone || "").trim()) throw new Error("Veuillez renseigner le téléphone.");
 
-    const files = Array.from(photosInput.files).slice(0, MAX_PHOTOS);
-    const photosBase64 = await Promise.all(
-      files.map(file =>
-        toBase64(file).then(b64 => ({
-          filename: file.name,
-          mimeType: file.type,
-          base64: b64.split(",")[1]
-        }))
-      )
-    );
+    const files = Array.from(photosInput.files || []).slice(0, MAX_PHOTOS);
+    const photos = [];
+    for (const file of files) {
+      const dataUrl = await toBase64(file);
+      photos.push({
+        filename: file.name,
+        mimeType: file.type || "image/jpeg",
+        base64: String(dataUrl).split(",")[1] || ""
+      });
+    }
 
     const metiers = [];
     document.querySelectorAll(".metierBlock").forEach(block => {
       const id = block.id.split("_")[1];
-      const metier = block.querySelector(".metierSelect").value;
+      const metier = block.querySelector(".metierSelect")?.value || "";
       if (!metier) return;
 
-      const descMetier = block.querySelector(".descMetier").value;
+      const descMetier = block.querySelector(".descMetier")?.value || "";
 
       const reponses = {};
       block.querySelectorAll(".questionSelect").forEach(sel => {
@@ -936,30 +829,23 @@ async function submitForm() {
         metier,
         description: descMetier,
         questions: reponses,
-        forfait: document.getElementById(`forfait_${id}`)?.value || null,
-        hebergement: document.getElementById(`hebergement_${id}`)?.value || null,
-        techniciens: document.getElementById(`techniciens_${id}`)?.value || null,
-        debut: document.getElementById(`debut_${id}`)?.value || null,
-        fin: document.getElementById(`fin_${id}`)?.value || null
+        techniciens: document.getElementById(`techniciens_${id}`)?.value || "",
+        forfait: document.getElementById(`forfait_${id}`)?.value || "",
+        hebergement: document.getElementById(`hebergement_${id}`)?.value || "",
+        debut: document.getElementById(`debut_${id}`)?.value || "",
+        fin: document.getElementById(`fin_${id}`)?.value || ""
       });
     });
 
     const payload = {
       deviceId: getDeviceId_(),
       typeClient: typeClient.value,
-      nom,
-      telephone,
-      email,
+      nom, telephone, email,
 
-      telephonePrive: typeClient.value === "prive" ? telephone : null,
-      emailPrive: typeClient.value === "prive" ? email : null,
-
-      nomEntreprise: typeClient.value === "entreprise" ? nomEntrepriseEl.value : null,
-      nui: typeClient.value === "entreprise" ? nuiEl.value : null,
-      rccm: typeClient.value === "entreprise" ? rccmEl.value : null,
-      siege: typeClient.value === "entreprise" ? siegeEl.value : null,
-      telephoneEntreprise: typeClient.value === "entreprise" ? telephoneEntrepriseEl.value : null,
-      emailEntreprise: typeClient.value === "entreprise" ? emailEntrepriseEl.value : null,
+      nomEntreprise: typeClient.value === "entreprise" ? nomEntrepriseEl.value : "",
+      nui: typeClient.value === "entreprise" ? nuiEl.value : "",
+      rccm: typeClient.value === "entreprise" ? rccmEl.value : "",
+      siege: typeClient.value === "entreprise" ? siegeEl.value : "",
 
       ville: (villeSelect.value === "Autre") ? villeAutre.value : villeSelect.value,
       quartier: quartierInput.value,
@@ -977,30 +863,17 @@ async function submitForm() {
       dateSouhaitee: dateSouhaitee.value,
 
       description: description.value,
-
       metiers,
-      photos: photosBase64
+      photos
     };
 
-    // Envoi sans fetch: payload => input hidden => form.submit() (dans iframe)
-    const payloadField = document.getElementById("payloadField");
-    const form = document.getElementById("qemForm");
-    payloadField.value = JSON.stringify(payload);
-    form.submit();
+    document.getElementById("payloadField").value = JSON.stringify(payload);
+    document.getElementById("qemForm").submit();
 
-    // fallback si aucune réponse (postMessage)
-    setTimeout(() => {
-      if (isSending) {
-        isSending = false;
-        submitBtn.disabled = false;
-        updateSubmitButtonLabel_();
-        alert("Aucune réponse du serveur. Réessayez.");
-      }
-    }, 30000);
-
+    statusEl.textContent = "Envoyé. (En iframe, tu ne peux pas lire la réponse JSON.)";
   } catch (err) {
-    alert("Erreur: " + (err?.message || err));
-    console.error(err);
+    statusEl.textContent = "Erreur: " + (err?.message || err);
+  } finally {
     isSending = false;
     submitBtn.disabled = false;
     updateSubmitButtonLabel_();
@@ -1008,66 +881,18 @@ async function submitForm() {
 }
 
 /************************************************************
- * Base64
+ * INIT
  ************************************************************/
-function toBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = () => reject(new Error("Impossible de lire le fichier."));
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
-  });
-}
-
-/************************************************************
- * INIT (après DOM)
- ************************************************************/
-document.addEventListener("DOMContentLoaded", () => {
-  // évite submit Enter
-  const form = document.getElementById("qemForm");
-  form.addEventListener("submit", (e) => e.preventDefault());
-
-  // Réception du résultat Apps Script via postMessage
-  window.addEventListener("message", (event) => {
-    const data = event.data || {};
-    if (!data || data.__qemwork__ !== true) return;
-
-    isSending = false;
-    submitBtn.disabled = false;
-    updateSubmitButtonLabel_();
-
-    if (data.success) {
-      alert(data.mode === "intervention" ? "Demande envoyée !" : "Coordonnées enregistrées !");
-    } else {
-      alert("Erreur: " + (data.error || "inconnue"));
-    }
-  });
-
-  btnAddMetier.addEventListener("click", ajouterMetier);
-  submitBtn.addEventListener("click", submitForm);
-
-  ["input","change"].forEach(evt => {
-    villeSelect.addEventListener(evt, updateSubmitButtonLabel_);
-    villeAutre.addEventListener(evt, updateSubmitButtonLabel_);
-    quartierInput.addEventListener(evt, updateSubmitButtonLabel_);
-    lieudit.addEventListener(evt, updateSubmitButtonLabel_);
-  });
-
-  intervention.addEventListener("change", () => {
-    majAffichageMainOeuvre_();
-    majAffichageProjet_();
-    updateSubmitButtonLabel_();
-  });
-
-  majAffichageMainOeuvre_();
+btnAddMetier.addEventListener("click", ajouterMetier);
+intervention.addEventListener("change", () => {
   majAffichageProjet_();
+  majAffichageMainOeuvre_();
   updateSubmitButtonLabel_();
 });
+submitBtn.addEventListener("click", submitForm_);
+
+ajouterMetier();
+updateSubmitButtonLabel_();
 </script>
 </body>
 </html>
-
-
-
-
-
