@@ -85,13 +85,8 @@
     <p>Ce formulaire nous permet de recueillir toutes les informations nécessaires afin de vous envoyer un devis estimatif, un technicien adapté et de suivre votre dossier.</p>
 
     <!-- IMPORTANT: action + target + payload hidden (no fetch) -->
-    <form id="qemForm"
-      method="POST"
-      target="hidden_iframe"
-      action="https://script.google.com/macros/s/AKfycbzvlbmaYJwv1BhKsf6rMzkTDSroBh00GUV7q8wNaX3Ua3PRpHKQn39maGCULMwCUsyp/exec">
-
-  <input type="hidden" id="payloadField" name="payload" value="">
-
+    
+  <form>
   <h2>1. Coordonnées du client</h2>
 
   <select id="typeClient" required>
@@ -188,14 +183,52 @@
 
   <button type="button" id="submitBtn">Envoyer la demande</button>
 </form>
-
-<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
   </div>
 
 <script>
 /************************************************************
  * CONFIG
  ************************************************************/
+// Appel serveur "pur" (sans blocage UI) + anti-double-clic
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzXD7MB0AV-mJDHBPnuBwWbUczV8YUiGhMbAwEnhDB5kEvcDwsDMcuFkWFGnrW5JAvd/exec";
+
+let _inFlight = false;
+
+async function sendToServer(payload) {
+  if (_inFlight) return;          // évite doublons
+  _inFlight = true;
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      body: "payload=" + encodeURIComponent(JSON.stringify(payload))
+    });
+
+    const text = await res.text();
+    let json;
+    try { json = JSON.parse(text); }
+    catch { throw new Error("Réponse serveur invalide: " + text.slice(0, 200)); }
+
+    if (!res.ok || json.success === false) throw new Error(json.error || `HTTP ${res.status}`);
+    return json;
+  } finally {
+    _inFlight = false;
+  }
+}
+  
+  
+ document.getElementById("submitBtn")?.addEventListener("click", async () => {
+  const payload = buildPayloadSomehow(); // <-- remplace par ta fonction
+  try {
+    const out = await sendToServer(payload);
+    console.log("OK", out);
+  } catch (e) {
+    console.error("ERREUR", e.message || e);
+  }
+}); 
+  
+  
 const MAX_PHOTOS = 2;
 let isSending = false;
 
@@ -1033,6 +1066,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
