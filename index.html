@@ -113,7 +113,6 @@
     <h2>2. Coordonnées du chantier</h2>
     <p class="section-desc">Indiquez où se situe exactement le chantier.</p>
 
-    <!-- Pas required => permet "Enregistrer mes coordonnées" -->
     <select id="ville">
       <option value="">Sélectionner la ville...</option>
       <option value="Yaoundé">Yaoundé</option>
@@ -142,7 +141,6 @@
       <option>Projet de rénovation</option>
     </select>
 
-    <!-- 3B. PROJET -->
     <div id="sectionProjet" style="display:none;">
       <h2>3B. Questionnaire projet</h2>
       <p class="section-desc">Merci de compléter ces informations pour permettre une première estimation.</p>
@@ -153,7 +151,7 @@
     <p class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
 
     <div id="metiersContainer"></div>
-    <button type="button" class="addMetierBtn" onclick="ajouterMetier()">➕ Ajouter un corps de métier</button>
+    <button type="button" class="addMetierBtn" onclick="ajouterMetier()">Ajouter un corps de métier</button>
 
     <h2>5. Informations complémentaires</h2>
     <p class="section-desc">Merci de fournir toute information supplémentaire susceptible de nous aider.</p>
@@ -182,8 +180,7 @@
       <input type="date" id="dateSouhaitee">
     </div>
 
-    <button type="button" id="submitBtn" onclick="submitForm()">📩 Envoyer la demande</button>
-
+    <button type="button" id="submitBtn" onclick="submitForm()">Envoyer la demande</button>
   </form>
 </div>
 
@@ -196,13 +193,49 @@ const MAX_PHOTOS = 2;
 let isSending = false;
 
 /************************************************************
- * QUESTIONNAIRES PROJET
+ * QUESTIONNAIRES PROJET (avec LISTE LOTS Construction + Rénovation)
  ************************************************************/
 const QUESTIONNAIRE_CONSTRUCTION = [
   { section:"PC. Nature du projet", question:"Type de projet ?", options:["Construction neuve","Extension / Surélévation","Projet clé en main"] },
   { section:"PC. Nature du projet", question:"Bâtiment concerné ?", options:["Maison individuelle","Immeuble d’habitation","Bâtiment commercial","Bureaux","Entrepôt / atelier"] },
   { section:"PC. Dimensions", question:"Surface totale approximative ?", options:["<50 m²","50–100 m²","100–200 m²","200–500 m²","500+ m²"] },
   { section:"PC. Dimensions", question:"Nombre de niveaux ?", options:["RDC seul","R+1","R+2","R+3 et +"] },
+
+  {
+    section: "PC. Lots",
+    question: "Lots à construire ? (choix multiple)",
+    type: "checkboxes",
+    options: [
+      "Études / conception",
+      "Terrassement",
+      "VRD / Raccordements",
+      "Fondations",
+      "Gros œuvre / Maçonnerie",
+      "Charpente",
+      "Toiture / Couverture",
+      "Zinguerie",
+      "Étanchéité",
+      "Façade / Enduit",
+      "Isolation",
+      "Menuiseries extérieures (portes/fenêtres)",
+      "Menuiseries intérieures",
+      "Plâtrerie / Cloisons / Faux plafond",
+      "Électricité",
+      "Plomberie / Sanitaires",
+      "Chauffage",
+      "Climatisation / Ventilation (VMC)",
+      "Peinture",
+      "Revêtements murs (faïence, etc.)",
+      "Revêtements sols (carrelage/parquet)",
+      "Cuisine",
+      "Salle de bain",
+      "Escalier / Garde-corps",
+      "Aménagements extérieurs (clôture, portail, terrasse)",
+      "Nettoyage fin de chantier",
+      "Tout"
+    ]
+  },
+
   { section:"PC. Terrain", question:"Terrain disponible ?", options:["Oui","Non","En cours d’acquisition"] },
   { section:"PC. Terrain", question:"Étude de sol ?", options:["Oui – disponible","Non","À faire"] },
   { section:"PC. Plans", question:"Plans disponibles ?", options:["Oui – architecte","Oui – croquis","Non"] },
@@ -537,7 +570,7 @@ photosInput.addEventListener("change", () => {
   const files = Array.from(photosInput.files).slice(0, MAX_PHOTOS);
 
   if (photosInput.files.length > MAX_PHOTOS) {
-    alert(`ℹ️ Maximum ${MAX_PHOTOS} photos. Seules les ${MAX_PHOTOS} premières seront envoyées.`);
+    alert(`Maximum ${MAX_PHOTOS} photos. Seules les ${MAX_PHOTOS} premières seront envoyées.`);
   }
 
   const dt = new DataTransfer();
@@ -599,14 +632,12 @@ function renderQuestionnaireProjet_(items, prefix) {
         cb.value = opt;
 
         cb.addEventListener("change", () => {
-          // règle "Tout" exclusive
           if (opt === "Tout" && cb.checked) {
             document.querySelectorAll(`input[type="checkbox"][data-qid="${qid}"]`).forEach(x => {
               if (x.value !== "Tout") x.checked = false;
             });
             projetReponses[item.question] = ["Tout"];
           } else {
-            // si autre option cochée, décocher "Tout"
             const tout = document.getElementById(`${qid}_${slug_("Tout")}`);
             if (tout && tout.checked && opt !== "Tout") tout.checked = false;
 
@@ -725,7 +756,7 @@ function ajouterMetier() {
     </div>
 
     <button type="button" class="removeMetierBtn" onclick="supprimerMetier(${compteurMetiers})">
-      ❌ Supprimer ce métier
+      Supprimer ce métier
     </button>
   `;
 
@@ -830,7 +861,7 @@ function isInterventionCompleteFront_(p) {
 
 function updateSubmitButtonLabel_() {
   const complete = isInterventionCompleteFront_(buildPayloadLight_());
-  submitBtn.textContent = complete ? "📩 Envoyer la demande" : "Enregistrer mes coordonnées";
+  submitBtn.textContent = complete ? "Envoyer la demande" : "Enregistrer mes coordonnées";
 }
 
 /************************************************************
@@ -971,9 +1002,9 @@ async function submitForm() {
     };
 
     await postToAppsScript_(payload);
-    alert("✔️ Enregistré avec succès !");
+    alert("Enregistré avec succès !");
   } catch (err) {
-    alert("❌ " + (err?.message || err));
+    alert("Erreur: " + (err?.message || err));
     console.log(err);
   } finally {
     isSending = false;
@@ -1003,5 +1034,3 @@ updateSubmitButtonLabel_();
 </script>
 </body>
 </html>
-
-
