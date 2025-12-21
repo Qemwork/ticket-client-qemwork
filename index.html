@@ -86,110 +86,110 @@
 
     <!-- IMPORTANT: action + target + payload hidden (no fetch) -->
     <form id="qemForm"
-          method="POST"
-          target="hidden_iframe"
-          action="https://script.google.com/macros/s/AKfycbxq0kkxdsciZ1aRSSr6xNrZ_zNYqHZ5QlF7ZEC1rNX4649fX5t8f9KybQ-N0MHRvv1l/exec">
+      method="POST"
+      target="hidden_iframe"
+      action="https://script.google.com/macros/s/AKfycbzvlbmaYJwv1BhKsf6rMzkTDSroBh00GUV7q8wNaX3Ua3PRpHKQn39maGCULMwCUsyp/exec">
 
-      <input type="hidden" id="payloadField" name="payload" value="">
+  <input type="hidden" id="payloadField" name="payload" value="">
 
-      <h2>1. Coordonnées du client</h2>
+  <h2>1. Coordonnées du client</h2>
 
-      <select id="typeClient" required>
-        <option value="">Êtes-vous un client privé ou une entreprise ?</option>
-        <option value="prive">Client privé</option>
-        <option value="entreprise">Entreprise</option>
-      </select>
+  <select id="typeClient" required>
+    <option value="">Êtes-vous un client privé ou une entreprise ?</option>
+    <option value="prive">Client privé</option>
+    <option value="entreprise">Entreprise</option>
+  </select>
 
-      <div id="clientPrive" style="display:none;">
-        <input id="nomPrive" placeholder="Nom du client *">
-        <input id="telephonePrive" placeholder="Téléphone *">
-        <input id="emailPrive" placeholder="E-mail" type="email">
-      </div>
+  <div id="clientPrive" style="display:none;">
+    <input id="nomPrive" placeholder="Nom du client *">
+    <input id="telephonePrive" placeholder="Téléphone *">
+    <input id="emailPrive" placeholder="E-mail" type="email">
+  </div>
 
-      <div id="clientEntreprise" style="display:none;">
-        <input id="nomEntreprise" placeholder="Nom de l'entreprise *">
-        <input id="nui" placeholder="Numéro de NUI">
-        <input id="rccm" placeholder="Numéro de RCCM">
-        <input id="siege" placeholder="Adresse du siège social">
-        <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise *">
-        <input id="emailEntreprise" placeholder="E-mail professionnel" type="email">
-      </div>
+  <div id="clientEntreprise" style="display:none;">
+    <input id="nomEntreprise" placeholder="Nom de l'entreprise *">
+    <input id="nui" placeholder="Numéro de NUI">
+    <input id="rccm" placeholder="Numéro de RCCM">
+    <input id="siege" placeholder="Adresse du siège social">
+    <input id="telephoneEntreprise" placeholder="Téléphone de l'entreprise *">
+    <input id="emailEntreprise" placeholder="E-mail professionnel" type="email">
+  </div>
 
-      <h2>2. Coordonnées du chantier</h2>
-      <p class="section-desc">Indiquez où se situe exactement le chantier.</p>
+  <h2>2. Coordonnées du chantier</h2>
+  <p class="section-desc">Indiquez où se situe exactement le chantier.</p>
 
-      <select id="ville">
-        <option value="">Sélectionner la ville...</option>
-        <option value="Yaoundé">Yaoundé</option>
-        <option value="Douala">Douala</option>
-        <option value="Autre">Autre</option>
-      </select>
+  <select id="ville">
+    <option value="">Sélectionner la ville...</option>
+    <option value="Yaoundé">Yaoundé</option>
+    <option value="Douala">Douala</option>
+    <option value="Autre">Autre</option>
+  </select>
 
-      <input id="villeAutre" placeholder="Précisez la ville" style="display:none;">
+  <input id="villeAutre" placeholder="Précisez la ville" style="display:none;">
 
-      <div class="autocomplete-container">
-        <input id="quartier" placeholder="Quartier" autocomplete="off">
-        <div id="quartierResults" class="autocomplete-results" style="display:none;"></div>
-      </div>
+  <div class="autocomplete-container">
+    <input id="quartier" placeholder="Quartier" autocomplete="off">
+    <div id="quartierResults" class="autocomplete-results" style="display:none;"></div>
+  </div>
 
-      <input id="lieudit" placeholder="Lieu dit (optionnel)">
+  <input id="lieudit" placeholder="Lieu dit (optionnel)">
 
-      <h2>3. Type d’intervention</h2>
-      <p class="section-desc">Sélectionnez la nature de votre demande.</p>
+  <h2>3. Type d’intervention</h2>
+  <p class="section-desc">Sélectionnez la nature de votre demande.</p>
 
-      <select id="intervention">
-        <option value="">Sélectionner...</option>
-        <option>Mission urgence</option>
-        <option>Mission classique</option>
-        <option>Demande de main d'œuvre</option>
-        <option>Projet de construction complète</option>
-        <option>Projet de rénovation</option>
-      </select>
+  <select id="intervention">
+    <option value="">Sélectionner...</option>
+    <option>Mission urgence</option>
+    <option>Mission classique</option>
+    <option>Demande de main d'œuvre</option>
+    <option>Projet de construction complète</option>
+    <option>Projet de rénovation</option>
+  </select>
 
-      <div id="sectionProjet" style="display:none;">
-        <h2>3B. Questionnaire projet</h2>
-        <p class="section-desc">Merci de compléter ces informations pour permettre une première estimation.</p>
-        <div id="projetContainer"></div>
-      </div>
+  <div id="sectionProjet" style="display:none;">
+    <h2>3B. Questionnaire projet</h2>
+    <p class="section-desc">Merci de compléter ces informations pour permettre une première estimation.</p>
+    <div id="projetContainer"></div>
+  </div>
 
-      <h2>4. Corps de métier</h2>
-      <p class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
+  <h2>4. Corps de métier</h2>
+  <p class="section-desc">Vous pouvez ajouter plusieurs métiers si nécessaire.</p>
 
-      <div id="metiersContainer"></div>
-      <button type="button" class="addMetierBtn" id="btnAddMetier">Ajouter un corps de métier</button>
+  <div id="metiersContainer"></div>
+  <button type="button" class="addMetierBtn" id="btnAddMetier">Ajouter un corps de métier</button>
 
-      <h2>5. Informations complémentaires</h2>
-      <p class="section-desc">Merci de fournir toute information supplémentaire susceptible de nous aider.</p>
-      <textarea id="description" placeholder="Renseignez vos informations ici..."></textarea>
+  <h2>5. Informations complémentaires</h2>
+  <p class="section-desc">Merci de fournir toute information supplémentaire susceptible de nous aider.</p>
+  <textarea id="description" placeholder="Renseignez vos informations ici..."></textarea>
 
-      <h2>6. Photos du chantier (optionnel)</h2>
-      <p class="section-desc">Ajoutez quelques photos pour aider le technicien à mieux comprendre la situation.</p>
+  <h2>6. Photos du chantier (optionnel)</h2>
+  <p class="section-desc">Ajoutez quelques photos pour aider le technicien à mieux comprendre la situation.</p>
 
-      <div class="notice">
-        Limites : <b>2 photos max</b> par envoi (pour éviter les quotas Google). Si vous en choisissez plus, seules les 2 premières seront envoyées.
-      </div>
+  <div class="notice">
+    Limites : <b>2 photos max</b> par envoi (pour éviter les quotas Google).
+    Si vous en choisissez plus, seules les 2 premières seront envoyées.
+  </div>
 
-      <input type="file" id="photos" accept="image/*" multiple>
-      <div id="photoPreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
+  <input type="file" id="photos" accept="image/*" multiple>
+  <div id="photoPreview" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
 
-      <div id="sectionDisponibilites">
-        <h2>7. Disponibilités</h2>
-        <p class="section-desc">Veuillez indiquer jusqu’à trois créneaux pour une visite sur place.</p>
-        <input type="datetime-local" id="c1">
-        <input type="datetime-local" id="c2">
-        <input type="datetime-local" id="c3">
-      </div>
+  <div id="sectionDisponibilites">
+    <h2>7. Disponibilités</h2>
+    <p class="section-desc">Veuillez indiquer jusqu’à trois créneaux pour une visite sur place.</p>
+    <input type="datetime-local" id="c1">
+    <input type="datetime-local" id="c2">
+    <input type="datetime-local" id="c3">
+  </div>
 
-      <div id="sectionDateSouhaitee">
-        <h2>8. Date souhaitée pour l’intervention</h2>
-        <input type="date" id="dateSouhaitee">
-      </div>
+  <div id="sectionDateSouhaitee">
+    <h2>8. Date souhaitée pour l’intervention</h2>
+    <input type="date" id="dateSouhaitee">
+  </div>
 
-      <button type="button" id="submitBtn">Envoyer la demande</button>
-    </form>
+  <button type="button" id="submitBtn">Envoyer la demande</button>
+</form>
 
-    <!-- iframe caché: permet le POST sans fetch, sans quitter la page -->
-    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+<iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
   </div>
 
 <script>
@@ -1033,6 +1033,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
 
 
 
