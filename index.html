@@ -50,7 +50,7 @@
 
     <form id="qemForm"
           method="POST"
-          action="https://script.google.com/macros/s/AKfycbwWIc-45L2h8uJEyGgCaDajYm6qVjnFkmQLXr_ioAHe2nqDxFULlYtTwroBC3SnBNaH/exec"
+          action="TON_URL_WEBAPP_EXEC_ICI"
           target="hidden_iframe">
       <input type="hidden" id="payloadField" name="payload" value="">
 
@@ -201,7 +201,7 @@ const QUESTIONNAIRE_RENOVATION = [
   { section:"PR. Objectif", question:"Objectif principal ?", options:["Remise à neuf","Modernisation","Mise en conformité","Réparation dégâts (eau/feu)"] },
   { section:"PR. Logistique", question:"Accès chantier ?", options:["Accès camion facile","Accès moyen","Accès difficile"] },
   { section:"PR. Budget / Délais", question:"Budget estimatif ?", options:["<5 M","5–10 M","10–25 M","25–50 M","50 M+","À définir"] },
-  { section:"PR. Budget / Délais", question:"Délai souhaité ?", options:["Urgent","1–3 mois","3–6 mois","6–12 mois","12 mois+"] }
+  { section:"PR. Budget / Délais", question:"Délai souhaité ?", options:["Urgent","1–3 mois","3–6 mois","3–6 mois","6–12 mois","12 mois+"] }
 ];
 
 /************************************************************
@@ -340,11 +340,14 @@ const data = {
 };
 
 /************************************************************
- * QUARTIERS
- * (Si tu veux aussi Douala + Yaoundé en FULL, colle tes listes ici)
+ * QUARTIERS (COLLE TES LISTES COMPLÈTES ICI)
  ************************************************************/
-const quartiersYaounde = [];  // <-- colle ta liste
-const quartiersDouala = [];   // <-- colle ta liste
+const quartiersYaounde = [
+  /* COLLE ICI TA LISTE COMPLÈTE YAOUNDÉ */
+];
+const quartiersDouala = [
+  /* COLLE ICI TA LISTE COMPLÈTE DOUALA */
+];
 
 /************************************************************
  * DOM
@@ -373,7 +376,6 @@ const lieudit = document.getElementById('lieudit');
 const intervention = document.getElementById("intervention");
 const sectionDisponibilites = document.getElementById("sectionDisponibilites");
 const sectionDateSouhaitee = document.getElementById("sectionDateSouhaitee");
-
 const c1 = document.getElementById("c1");
 const c2 = document.getElementById("c2");
 const c3 = document.getElementById("c3");
@@ -726,12 +728,21 @@ function majAffichageMainOeuvre_() {
 
 /************************************************************
  * COMPLETUDE (front)
+ * - "coordonnées" = typeClient + nom + tel + description (point 5) uniquement
+ * - "complet" = + intervention + chantier + (métier OU projet)
  ************************************************************/
 function buildPayloadLight_() {
   return {
+    typeClient: typeClient.value,
+    nom: (typeClient.value === "prive") ? nomPrive.value : nomEntrepriseEl.value,
+    telephone: (typeClient.value === "prive") ? telephonePrive.value : telephoneEntrepriseEl.value,
+    email: (typeClient.value === "prive") ? emailPrive.value : emailEntrepriseEl.value,
+
     ville: (villeSelect.value === "Autre") ? villeAutre.value : villeSelect.value,
     quartier: quartierInput.value,
     intervention: intervention.value,
+    description: description.value,
+
     metiers: Array.from(document.querySelectorAll(".metierBlock")).map(block => ({
       metier: block.querySelector(".metierSelect")?.value || ""
     })),
@@ -741,7 +752,29 @@ function buildPayloadLight_() {
   };
 }
 
-function isInterventionCompleteFront_(p) {
+function isCoordonneesOnlyFront_(p) {
+  const hasClient =
+    String(p.typeClient || "").trim() &&
+    String(p.nom || "").trim() &&
+    String(p.telephone || "").trim() &&
+    String(p.description || "").trim();
+
+  const nothingElse =
+    !String(p.ville || "").trim() &&
+    !String(p.quartier || "").trim() &&
+    !String(p.intervention || "").trim() &&
+    !(Array.isArray(p.metiers) && p.metiers.some(m => String(m?.metier || "").trim())) &&
+    !p.projet;
+
+  return !!(hasClient && nothingElse);
+}
+
+function isTicketCompleteFront_(p) {
+  const hasClient =
+    String(p.typeClient || "").trim() &&
+    String(p.nom || "").trim() &&
+    String(p.telephone || "").trim();
+
   const hasChantierEtType =
     String(p.ville || "").trim() &&
     String(p.quartier || "").trim() &&
@@ -750,12 +783,14 @@ function isInterventionCompleteFront_(p) {
   const hasMetier = Array.isArray(p.metiers) && p.metiers.some(m => String(m?.metier || "").trim());
   const hasProjet = !!(p.projet && String(p.projet.type || "").trim());
 
-  return !!(hasChantierEtType && (hasMetier || hasProjet));
+  return !!(hasClient && hasChantierEtType && (hasMetier || hasProjet));
 }
 
 function updateSubmitButtonLabel_() {
-  const complete = isInterventionCompleteFront_(buildPayloadLight_());
-  submitBtn.textContent = complete ? "Envoyer la demande" : "Enregistrer mes coordonnées";
+  const p = buildPayloadLight_();
+  if (isTicketCompleteFront_(p)) submitBtn.textContent = "Envoyer la demande";
+  else if (isCoordonneesOnlyFront_(p)) submitBtn.textContent = "Enregistrer mes coordonnées";
+  else submitBtn.textContent = "Enregistrer / Continuer";
 }
 
 /************************************************************
@@ -870,7 +905,7 @@ async function submitForm_() {
     document.getElementById("payloadField").value = JSON.stringify(payload);
     document.getElementById("qemForm").submit();
 
-    statusEl.textContent = "Envoyé. (En iframe, tu ne peux pas lire la réponse JSON.)";
+    statusEl.textContent = "Envoyé.";
   } catch (err) {
     statusEl.textContent = "Erreur: " + (err?.message || err);
   } finally {
